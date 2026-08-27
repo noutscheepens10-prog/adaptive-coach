@@ -1,1508 +1,352 @@
-<!DOCTYPE html>
+from pathlib import Path
+
+html = r'''<!DOCTYPE html>
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Adaptive Coach">
 <meta name="theme-color" content="#f5f5f0">
-
 <title>Adaptive Coach</title>
-
 <style>
-* {
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
-
-:root {
-  --bg: #f5f5f0;
-  --card: #ffffff;
-  --text: #111111;
-  --muted: #73736c;
-  --border: #e2e2da;
-  --soft: #eeeeea;
-  --green: #dff2e4;
-  --greenText: #18572e;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-}
-
-button,
-input,
-select {
-  font: inherit;
-}
-
-button {
-  cursor: pointer;
-}
-
-.app {
-  width: min(1180px, calc(100% - 28px));
-  margin: auto;
-  padding-bottom: 40px;
-}
-
-.header {
-  height: 76px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.logo {
-  font-size: 21px;
-  font-weight: 900;
-  letter-spacing: -1px;
-}
-
-.logo span {
-  opacity: .35;
-}
-
-.headerRight {
-  font-size: 12px;
-  color: var(--muted);
-}
-
-.layout {
-  display: grid;
-  grid-template-columns: 220px 1fr;
-  gap: 18px;
-}
-
-.sidebar {
-  height: max-content;
-  position: sticky;
-  top: 16px;
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 22px;
-  padding: 10px;
-  z-index: 5;
-}
-
-.navButton {
-  display: block;
-  width: 100%;
-  border: 0;
-  background: transparent;
-  color: #686862;
-  text-align: left;
-  padding: 13px;
-  border-radius: 12px;
-  font-weight: 750;
-  margin-bottom: 3px;
-}
-
-.navButton.active {
-  background: #eeeeea;
-  color: #111;
-}
-
-.navButton:hover {
-  background: #f1f1ec;
-  color: #111;
-}
-
-.screen {
-  display: none;
-}
-
-.screen.active {
-  display: block;
-}
-
-.hero {
-  position: relative;
-  overflow: hidden;
-  background: #111;
-  color: #fff;
-  border-radius: 28px;
-  padding: 40px;
-  margin-bottom: 18px;
-}
-
-.hero:after {
-  content: "";
-  position: absolute;
-  width: 350px;
-  height: 350px;
-  border: 1px solid rgba(255,255,255,.1);
-  border-radius: 50%;
-  right: -130px;
-  top: -150px;
-  pointer-events: none;
-}
-
-.eyebrow {
-  font-size: 11px;
-  font-weight: 900;
-  letter-spacing: 1.8px;
-  opacity: .55;
-}
-
-.hero h1 {
-  max-width: 700px;
-  margin: 14px 0;
-  font-size: clamp(40px, 6vw, 64px);
-  line-height: .95;
-  letter-spacing: -3px;
-}
-
-.hero p {
-  max-width: 650px;
-  color: #c8c8c2;
-  font-size: 17px;
-  line-height: 1.55;
-}
-
-.button {
-  border: 0;
-  border-radius: 13px;
-  padding: 14px 18px;
-  font-weight: 850;
-  transition: .15s;
-}
-
-.button:hover {
-  transform: translateY(-1px);
-}
-
-.button.dark {
-  background: #111;
-  color: #fff;
-}
-
-.button.light {
-  background: #fff;
-  color: #111;
-}
-
-.button.outline {
-  background: #fff;
-  color: #111;
-  border: 1px solid var(--border);
-}
-
-.button.full {
-  width: 100%;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: 1.3fr .7fr;
-  gap: 18px;
-}
-
-.card {
-  background: #fff;
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  padding: 23px;
-  margin-bottom: 18px;
-}
-
-.card h2 {
-  margin: 0 0 6px;
-  font-size: 24px;
-  letter-spacing: -.8px;
-}
-
-.muted {
-  color: var(--muted);
-}
-
-.today {
-  border: 1px solid var(--border);
-  border-radius: 20px;
-  padding: 22px;
-  margin-top: 16px;
-}
-
-.title {
-  font-size: 31px;
-  font-weight: 900;
-  letter-spacing: -1px;
-  margin: 7px 0;
-}
-
-.meta {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin: 13px 0;
-}
-
-.pill {
-  background: var(--soft);
-  padding: 7px 11px;
-  border-radius: 999px;
-  font-size: 12px;
-  font-weight: 800;
-}
-
-.progress {
-  height: 9px;
-  background: var(--soft);
-  border-radius: 99px;
-  overflow: hidden;
-  margin-top: 14px;
-}
-
-.progress span {
-  display: block;
-  width: 68%;
-  height: 100%;
-  background: #111;
-}
-
-.coach {
-  display: flex;
-  gap: 11px;
-  margin-top: 20px;
-}
-
-.avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 13px;
-  background: #111;
-  color: #fff;
-  display: grid;
-  place-items: center;
-  font-weight: 900;
-  flex-shrink: 0;
-}
-
-.coach p {
-  margin: 0;
-  line-height: 1.5;
-}
-
-.week {
-  display: grid;
-  gap: 8px;
-  margin-top: 16px;
-}
-
-.day {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  padding: 15px;
-  border: 1px solid var(--border);
-  border-radius: 15px;
-  background: #fafaf7;
-}
-
-.day strong {
-  display: block;
-}
-
-.day small {
-  display: block;
-  color: var(--muted);
-  margin-top: 4px;
-}
-
-.badge {
-  background: var(--green);
-  color: var(--greenText);
-  border-radius: 999px;
-  padding: 6px 9px;
-  font-size: 11px;
-  font-weight: 900;
-}
-
-.exerciseList {
-  display: grid;
-  gap: 9px;
-  margin-top: 18px;
-}
-
-.exercise {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 15px;
-  padding: 17px;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-}
-
-.exercise b {
-  display: block;
-}
-
-.exercise small {
-  display: block;
-  margin-top: 4px;
-  color: var(--muted);
-}
-
-.check {
-  width: 37px;
-  height: 37px;
-  border-radius: 50%;
-  background: #fff;
-  border: 1px solid var(--border);
-  font-weight: 900;
-  flex-shrink: 0;
-}
-
-.check.done {
-  background: #111;
-  color: #fff;
-}
-
-.rpeContainer {
-  margin: 22px 0;
-}
-
-.rpeTop {
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-  font-weight: 750;
-}
-
-.rpe {
-  width: 100%;
-  margin-top: 12px;
-}
-
-.chat {
-  min-height: 300px;
-  max-height: 430px;
-  overflow-y: auto;
-  background: #fafaf7;
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 15px;
-  display: flex;
-  flex-direction: column;
-  gap: 9px;
-}
-
-.message {
-  max-width: 82%;
-  padding: 11px 14px;
-  border-radius: 15px;
-  line-height: 1.45;
-}
-
-.coachMessage {
-  background: #fff;
-  border: 1px solid var(--border);
-}
-
-.userMessage {
-  background: #111;
-  color: #fff;
-  margin-left: auto;
-}
-
-.chatInput {
-  display: flex;
-  gap: 8px;
-  margin-top: 10px;
-}
-
-.chatInput input {
-  min-width: 0;
-  flex: 1;
-  border: 1px solid var(--border);
-  border-radius: 13px;
-  padding: 13px;
-  outline: none;
-}
-
-.chatInput input:focus {
-  border-color: #999;
-}
-
-.formGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 13px;
-}
-
-.field {
-  display: grid;
-  gap: 7px;
-}
-
-.field label {
-  font-size: 12px;
-  font-weight: 850;
-}
-
-.field input,
-.field select {
-  width: 100%;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 13px;
-  background: #fff;
-  outline: none;
-}
-
-.choices {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-
-.choice {
-  border: 1px solid var(--border);
-  background: #fff;
-  border-radius: 12px;
-  padding: 11px 13px;
-  font-weight: 750;
-}
-
-.choice.selected {
-  background: #111;
-  color: #fff;
-  border-color: #111;
-}
-
-.stats {
-  display: grid;
-  grid-template-columns: repeat(3,1fr);
-  gap: 10px;
-  margin-top: 18px;
-}
-
-.stat {
-  padding: 17px;
-  background: #fafaf7;
-  border: 1px solid var(--border);
-  border-radius: 15px;
-}
-
-.statNumber {
-  font-size: 27px;
-  font-weight: 900;
-}
-
-.statLabel {
-  color: var(--muted);
-  font-size: 12px;
-  margin-top: 3px;
-}
-
-.toast {
-  position: fixed;
-  z-index: 100;
-  bottom: 22px;
-  right: 22px;
-  max-width: 350px;
-  background: #111;
-  color: #fff;
-  padding: 14px 17px;
-  border-radius: 14px;
-  font-weight: 750;
-  display: none;
-  box-shadow: 0 12px 40px rgba(0,0,0,.2);
-}
-
-@media(max-width:820px) {
-
-  .app {
-    width: min(100% - 18px, 650px);
-  }
-
-  .header {
-    height: 64px;
-  }
-
-  .layout {
-    grid-template-columns: 1fr;
-  }
-
-  .sidebar {
-    position: static;
-    display: flex;
-    overflow-x: auto;
-    gap: 3px;
-    padding: 7px;
-  }
-
-  .navButton {
-    width: auto;
-    white-space: nowrap;
-    margin: 0;
-  }
-
-  .grid {
-    grid-template-columns: 1fr;
-  }
-
-  .hero {
-    padding: 28px 23px;
-  }
-
-  .hero h1 {
-    letter-spacing: -2px;
-  }
-
-  .formGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .stats {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-@media(max-width:480px) {
-
-  .headerRight {
-    display: none;
-  }
-
-  .hero h1 {
-    font-size: 42px;
-  }
-
-  .card {
-    padding: 18px;
-    border-radius: 20px;
-  }
-
-  .today {
-    padding: 18px;
-  }
-
-  .stats {
-    grid-template-columns: 1fr;
-  }
-
-  .chatInput {
-    flex-direction: column;
-  }
-
-  .chatInput .button {
-    width: 100%;
-  }
-}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#f5f5f0;--card:#fff;--text:#111;--muted:#707069;--border:#e3e3dc;--soft:#efefea;--green:#dff2e4;--greenText:#18572e}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+button,input,select{font:inherit}button{cursor:pointer}
+button:active{transform:scale(.98)}
+.app{width:min(1180px,calc(100% - 28px));margin:auto;padding-bottom:45px}
+.header{height:76px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-size:21px;font-weight:900;letter-spacing:-1px}.logo span{opacity:.35}
+.headerRight{font-size:12px;color:var(--muted)}
+.layout{display:grid;grid-template-columns:220px 1fr;gap:18px}
+.sidebar{height:max-content;position:sticky;top:16px;background:#fff;border:1px solid var(--border);border-radius:22px;padding:9px}
+.navButton{display:block;width:100%;border:0;background:transparent;color:#686862;text-align:left;padding:13px;border-radius:12px;font-weight:800;margin-bottom:3px}
+.navButton.active,.navButton:hover{background:#eeeeea;color:#111}
+.screen{display:none}.screen.active{display:block}
+.hero{position:relative;overflow:hidden;background:#111;color:#fff;border-radius:28px;padding:40px;margin-bottom:18px}
+.hero:after{content:"";position:absolute;width:350px;height:350px;border:1px solid rgba(255,255,255,.1);border-radius:50%;right:-130px;top:-150px}
+.eyebrow{font-size:11px;font-weight:900;letter-spacing:1.8px;opacity:.55}
+.hero h1{max-width:760px;margin:14px 0;font-size:clamp(40px,6vw,64px);line-height:.95;letter-spacing:-3px}
+.hero p{max-width:690px;color:#c8c8c2;font-size:17px;line-height:1.55}
+.button{border:0;border-radius:13px;padding:14px 18px;font-weight:850;transition:.15s}.button:hover{transform:translateY(-1px)}
+.button.dark{background:#111;color:#fff}.button.light{background:#fff;color:#111}.button.outline{background:#fff;color:#111;border:1px solid var(--border)}.button.full{width:100%}
+.grid{display:grid;grid-template-columns:1.3fr .7fr;gap:18px}
+.card{background:#fff;border:1px solid var(--border);border-radius:24px;padding:23px;margin-bottom:18px}
+.card h2{margin:0 0 6px;font-size:24px;letter-spacing:-.8px}.muted{color:var(--muted)}
+.today{border:1px solid var(--border);border-radius:20px;padding:22px;margin-top:16px}
+.title{font-size:31px;font-weight:900;letter-spacing:-1px;margin:7px 0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;margin:13px 0}.pill{background:var(--soft);padding:7px 11px;border-radius:999px;font-size:12px;font-weight:800}
+.progress{height:9px;background:var(--soft);border-radius:99px;overflow:hidden;margin-top:14px}.progress span{display:block;height:100%;background:#111}
+.coach{display:flex;gap:11px;margin-top:20px}.avatar{width:40px;height:40px;border-radius:13px;background:#111;color:#fff;display:grid;place-items:center;font-weight:900;flex-shrink:0}.coach p{margin:0;line-height:1.5}
+.week{display:grid;gap:8px;margin-top:16px}.day{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px;border:1px solid var(--border);border-radius:15px;background:#fafaf7}.day strong{display:block}.day small{display:block;color:var(--muted);margin-top:4px}
+.badge{background:var(--green);color:var(--greenText);border-radius:999px;padding:6px 9px;font-size:11px;font-weight:900}
+.exerciseList{display:grid;gap:9px;margin-top:18px}.exercise{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:17px;border:1px solid var(--border);border-radius:16px}.exercise b{display:block}.exercise small{display:block;margin-top:4px;color:var(--muted)}
+.check{width:37px;height:37px;border-radius:50%;background:#fff;border:1px solid var(--border);font-weight:900;flex-shrink:0}.check.done{background:#111;color:#fff}
+.rpeContainer{margin:22px 0}.rpeTop{display:flex;justify-content:space-between;font-size:14px;font-weight:750}.rpe{width:100%;margin-top:12px}
+.chat{min-height:300px;max-height:430px;overflow-y:auto;background:#fafaf7;border:1px solid var(--border);border-radius:18px;padding:15px;display:flex;flex-direction:column;gap:9px}.message{max-width:82%;padding:11px 14px;border-radius:15px;line-height:1.45}.coachMessage{background:#fff;border:1px solid var(--border)}.userMessage{background:#111;color:#fff;margin-left:auto}
+.chatInput{display:flex;gap:8px;margin-top:10px}.chatInput input{min-width:0;flex:1;border:1px solid var(--border);border-radius:13px;padding:13px;outline:none}
+.formGrid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:grid;gap:7px}.field label{font-size:12px;font-weight:850}.field input,.field select{width:100%;border:1px solid var(--border);border-radius:12px;padding:13px;background:#fff;outline:none}
+.choices{display:flex;flex-wrap:wrap;gap:8px}.choice{border:1px solid var(--border);background:#fff;border-radius:12px;padding:11px 13px;font-weight:750}.choice.selected{background:#111;color:#fff;border-color:#111}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.stat{padding:17px;background:#fafaf7;border:1px solid var(--border);border-radius:15px}.statNumber{font-size:27px;font-weight:900}.statLabel{color:var(--muted);font-size:12px;margin-top:3px}
+.toast{position:fixed;z-index:100;bottom:22px;right:22px;max-width:350px;background:#111;color:#fff;padding:14px 17px;border-radius:14px;font-weight:750;display:none;box-shadow:0 12px 40px rgba(0,0,0,.2)}
+.onboarding{position:fixed;inset:0;z-index:200;background:rgba(245,245,240,.98);display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}
+.onboarding.hidden{display:none}.setup{width:min(760px,100%);background:#fff;border:1px solid var(--border);border-radius:28px;padding:30px;box-shadow:0 20px 70px rgba(0,0,0,.08)}
+.setup h1{font-size:clamp(34px,6vw,54px);line-height:1;letter-spacing:-2px;margin:12px 0}.setup p{color:var(--muted);line-height:1.5}
+.step{display:none}.step.active{display:block}.stepTitle{font-size:23px;font-weight:900;margin:25px 0 12px}.setupActions{display:flex;gap:9px;margin-top:24px}.setupActions .button{flex:1}
+.progressSteps{display:flex;gap:6px;margin:18px 0}.progressSteps i{height:5px;flex:1;background:var(--soft);border-radius:10px}.progressSteps i.active{background:#111}
+.schemaGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:15px}.schema{border:1px solid var(--border);background:#fff;border-radius:17px;padding:16px;text-align:left}.schema.selected{border:2px solid #111;padding:15px}.schema strong{display:block}.schema span{display:block;color:var(--muted);font-size:12px;margin-top:5px;line-height:1.4}
+.sectionHead{display:flex;justify-content:space-between;gap:12px;align-items:end;margin-bottom:15px}.smallButton{border:1px solid var(--border);background:#fff;border-radius:10px;padding:9px 12px;font-weight:800}
+.notice{padding:14px;border-radius:15px;background:#f1f1ec;margin-top:15px;line-height:1.45;font-size:13px}
+@media(max-width:820px){.app{width:min(100% - 18px,650px)}.header{height:64px}.layout{grid-template-columns:1fr}.sidebar{position:static;display:flex;overflow-x:auto;gap:3px;padding:7px}.navButton{width:auto;white-space:nowrap;margin:0}.grid{grid-template-columns:1fr}.hero{padding:28px 23px}.formGrid{grid-template-columns:1fr}}
+@media(max-width:480px){.headerRight{display:none}.hero h1{font-size:42px}.card{padding:18px;border-radius:20px}.today{padding:18px}.stats{grid-template-columns:1fr}.chatInput{flex-direction:column}.chatInput .button{width:100%}.schemaGrid{grid-template-columns:1fr}.setup{padding:22px}.setupActions{flex-direction:column}}
 </style>
 </head>
-
 <body>
 
+<div id="onboarding" class="onboarding">
+  <div class="setup">
+    <div class="eyebrow">ADAPTIVE COACH</div>
+    <h1>Maak je persoonlijke trainingsplan.</h1>
+    <p>Beantwoord een paar vragen. Daarna kiest Adaptive Coach een passend schema dat je later kunt aanpassen.</p>
+    <div class="progressSteps"><i id="p1" class="active"></i><i id="p2"></i><i id="p3"></i><i id="p4"></i><i id="p5"></i></div>
+
+    <div id="step1" class="step active">
+      <div class="stepTitle">Wat is je geslacht?</div>
+      <div class="choices" data-single="gender">
+        <button class="choice" data-value="Man">Man</button><button class="choice" data-value="Vrouw">Vrouw</button><button class="choice" data-value="Anders">Anders</button><button class="choice" data-value="Zeg ik liever niet">Zeg ik liever niet</button>
+      </div>
+    </div>
+
+    <div id="step2" class="step">
+      <div class="stepTitle">Hoe oud ben je?</div>
+      <div class="field"><label>Leeftijd</label><input id="setupAge" type="number" min="13" max="100" placeholder="Bijv. 24"></div>
+    </div>
+
+    <div id="step3" class="step">
+      <div class="stepTitle">Wat is je belangrijkste doel?</div>
+      <div class="choices" data-single="goal">
+        <button class="choice" data-value="Sterker worden">Sterker worden</button><button class="choice" data-value="Spiermassa">Spiermassa</button><button class="choice" data-value="Afvallen">Afvallen</button><button class="choice" data-value="10K hardlopen">10K hardlopen</button><button class="choice" data-value="Halve marathon">Halve marathon</button><button class="choice" data-value="HYROX">HYROX</button><button class="choice" data-value="Algemeen fit">Algemeen fit</button>
+      </div>
+    </div>
+
+    <div id="step4" class="step">
+      <div class="stepTitle">Hoe vaak wil je trainen?</div>
+      <div class="choices" data-single="frequency">
+        <button class="choice" data-value="2">2× per week</button><button class="choice" data-value="3">3× per week</button><button class="choice" data-value="4">4× per week</button><button class="choice" data-value="5">5× per week</button><button class="choice" data-value="6">6× per week</button>
+      </div>
+    </div>
+
+    <div id="step5" class="step">
+      <div class="stepTitle">Hoe lang mag een sessie duren?</div>
+      <div class="choices" data-single="duration">
+        <button class="choice" data-value="20">20 min</button><button class="choice" data-value="30">30 min</button><button class="choice" data-value="45">45 min</button><button class="choice" data-value="60">60 min</button><button class="choice" data-value="90">90 min</button>
+      </div>
+      <div class="stepTitle">Kies een schema</div>
+      <div id="schemaChoices" class="schemaGrid"></div>
+    </div>
+
+    <div class="setupActions">
+      <button id="backSetup" class="button outline" onclick="prevSetup()">Terug</button>
+      <button id="nextSetup" class="button dark" onclick="nextSetup()">Volgende</button>
+    </div>
+  </div>
+</div>
+
 <div class="app">
-
-<header class="header">
-  <div class="logo">
-    adaptive<span>coach</span>
-  </div>
-
-  <div class="headerRight">
-    Persoonlijke trainingscoach
-  </div>
-</header>
-
+<header class="header"><div class="logo">adaptive<span>coach</span></div><div class="headerRight">Persoonlijke trainingscoach</div></header>
 <div class="layout">
-
 <nav class="sidebar">
-
-  <button type="button" class="navButton active" data-screen="dashboard">
-    Vandaag
-  </button>
-
-  <button type="button" class="navButton" data-screen="plan">
-    Mijn plan
-  </button>
-
-  <button type="button" class="navButton" data-screen="workout">
-    Training
-  </button>
-
-  <button type="button" class="navButton" data-screen="coach">
-    AI Coach
-  </button>
-
-  <button type="button" class="navButton" data-screen="profile">
-    Profiel
-  </button>
-
+<button class="navButton active" data-screen="dashboard">Vandaag</button>
+<button class="navButton" data-screen="plan">Mijn plan</button>
+<button class="navButton" data-screen="workout">Training</button>
+<button class="navButton" data-screen="coach">AI Coach</button>
+<button class="navButton" data-screen="profile">Profiel</button>
 </nav>
 
 <main>
-
 <section id="dashboard" class="screen active">
-
-  <div class="hero">
-
-    <div class="eyebrow">
-      ADAPTIVE COACH
-    </div>
-
-    <h1>
-      Je plan past zich aan jou aan.
-    </h1>
-
-    <p>
-      Geen rigide trainingsschema dat je leven dicteert.
-      Adaptive Coach maakt een plan voor jouw doel en past het
-      aan wanneer je planning, herstel of prestaties veranderen.
-    </p>
-
-    <button type="button" class="button light" data-go="workout">
-      Start mijn training
-    </button>
-
-  </div>
-
-  <div class="grid">
-
-    <div class="card">
-
-      <h2>Vandaag</h2>
-
-      <p class="muted">
-        Dinsdag · 45 min · Kracht
-      </p>
-
-      <div class="today">
-
-        <div class="eyebrow">
-          TRAINING A
-        </div>
-
-        <div class="title">
-          Full body strength
-        </div>
-
-        <div class="meta">
-
-          <span class="pill">45 min</span>
-          <span class="pill">RPE 7–8</span>
-          <span class="pill">Gym</span>
-
-        </div>
-
-        <p class="muted">
-          Vandaag ligt de nadruk op kracht. Je vorige training
-          ging goed, daarom verhogen we één belangrijke oefening
-          licht.
-        </p>
-
-        <button type="button" class="button dark" data-go="workout">
-          Training openen
-        </button>
-
-      </div>
-
-    </div>
-
-    <div class="card">
-
-      <h2>Jouw doel</h2>
-
-      <p class="muted">
-        100 kg bench press
-      </p>
-
-      <div style="font-size:40px;font-weight:900;margin-top:12px">
-        82.5 kg
-      </div>
-
-      <div class="progress">
-        <span></span>
-      </div>
-
-      <p class="muted">
-        68% van je doel
-      </p>
-
-      <div class="coach">
-
-        <div class="avatar">
-          A
-        </div>
-
-        <p>
-          <b>Coach:</b>
-          Je ligt op schema. We verhogen de belasting
-          alleen wanneer je prestaties dit toelaten.
-        </p>
-
-      </div>
-
-    </div>
-
-  </div>
-
-  <div class="card">
-
-    <h2>Deze week</h2>
-
-    <div class="stats">
-
-      <div class="stat">
-        <div class="statNumber">3</div>
-        <div class="statLabel">trainingen</div>
-      </div>
-
-      <div class="stat">
-        <div class="statNumber">2:05</div>
-        <div class="statLabel">trainingstijd</div>
-      </div>
-
-      <div class="stat">
-        <div class="statNumber">7.2</div>
-        <div class="statLabel">gemiddelde RPE</div>
-      </div>
-
-    </div>
-
-  </div>
-
+<div class="hero"><div class="eyebrow">ADAPTIVE COACH</div><h1>Je plan past zich aan jou aan.</h1><p id="heroText">Geen rigide trainingsschema dat je leven dicteert. Je plan houdt rekening met je doel, beschikbare tijd en trainingsfrequentie.</p><button class="button light" onclick="openScreen('workout')">Start mijn training</button></div>
+<div class="grid">
+<div class="card"><h2>Vandaag</h2><p class="muted" id="todayMeta">45 min · Kracht</p><div class="today"><div class="eyebrow">TRAINING A</div><div class="title" id="todayTitle">Full body strength</div><div class="meta"><span class="pill" id="todayDuration">45 min</span><span class="pill">RPE 7–8</span><span class="pill" id="todayType">Gym</span></div><p class="muted" id="todayDescription">Je belangrijkste trainingsprikkel van vandaag.</p><button class="button dark" onclick="openScreen('workout')">Training openen</button></div></div>
+<div class="card"><h2>Jouw doel</h2><p class="muted" id="goalLabel">Sterker worden</p><div style="font-size:34px;font-weight:900;margin-top:12px" id="goalProgress">Start</div><div class="progress"><span id="goalBar" style="width:18%"></span></div><p class="muted" id="goalHint">Je voortgang wordt opgebouwd na iedere training.</p><div class="coach"><div class="avatar">A</div><p><b>Coach:</b> Ik pas volume en intensiteit geleidelijk aan op basis van je trainingen.</p></div></div>
+</div>
+<div class="card"><h2>Deze week</h2><div class="stats"><div class="stat"><div class="statNumber" id="statSessions">0</div><div class="statLabel">trainingen afgerond</div></div><div class="stat"><div class="statNumber" id="statTime">0 min</div><div class="statLabel">trainingstijd</div></div><div class="stat"><div class="statNumber" id="statRpe">—</div><div class="statLabel">gemiddelde RPE</div></div></div></div>
 </section>
 
 <section id="plan" class="screen">
-
-  <div class="card">
-
-    <div class="eyebrow">
-      JOUW PLAN
-    </div>
-
-    <h2>
-      Een plan, geen gevangenis.
-    </h2>
-
-    <p class="muted">
-      Je schema is een uitgangspunt. Wanneer je leven verandert,
-      kan je trainingsweek mee veranderen.
-    </p>
-
-    <div class="week">
-
-      <div class="day">
-        <div>
-          <strong>Maandag · Upper body</strong>
-          <small>45 min · RPE 7 · afgerond</small>
-        </div>
-        <span class="badge">Voltooid</span>
-      </div>
-
-      <div class="day">
-        <div>
-          <strong>Dinsdag · Full body</strong>
-          <small>45 min · vandaag</small>
-        </div>
-        <span class="badge">Vandaag</span>
-      </div>
-
-      <div class="day">
-        <div>
-          <strong>Woensdag · Rust</strong>
-          <small>Actief herstel</small>
-        </div>
-        <span class="pill">Rust</span>
-      </div>
-
-      <div class="day">
-        <div>
-          <strong>Donderdag · Lower body</strong>
-          <small>40 min · gepland</small>
-        </div>
-
-        <button type="button" class="button outline" id="rescheduleButton">
-          Wijzig
-        </button>
-      </div>
-
-      <div class="day">
-        <div>
-          <strong>Zaterdag · Conditioning</strong>
-          <small>35 min · gepland</small>
-        </div>
-        <span class="pill">Gepland</span>
-      </div>
-
-    </div>
-
-  </div>
-
+<div class="card"><div class="sectionHead"><div><div class="eyebrow">JOUW PLAN</div><h2 id="planTitle">Persoonlijk weekschema</h2><p class="muted" id="planSubtitle">Je schema wordt afgestemd op je keuzes.</p></div><button class="smallButton" onclick="openScreen('profile')">Aanpassen</button></div><div id="weekList" class="week"></div></div>
+<div class="card"><h2>Andere schema's</h2><p class="muted">Je kunt altijd van aanpak wisselen.</p><div id="alternativeSchemas" class="schemaGrid"></div></div>
 </section>
 
 <section id="workout" class="screen">
-
-  <div class="card">
-
-    <div class="eyebrow">
-      VANDAAG · 45 MIN
-    </div>
-
-    <h2>
-      Full body strength
-    </h2>
-
-    <p class="muted">
-      Focus: kracht en techniek. Neem voldoende rust tussen
-      zware sets.
-    </p>
-
-    <div class="exerciseList">
-
-      <div class="exercise">
-        <div>
-          <b>1. Bench press</b>
-          <small>4 × 6 · 82.5 kg · RPE 7–8</small>
-        </div>
-
-        <button type="button" class="check">
-          ✓
-        </button>
-      </div>
-
-      <div class="exercise">
-        <div>
-          <b>2. Romanian deadlift</b>
-          <small>3 × 8 · gecontroleerd</small>
-        </div>
-
-        <button type="button" class="check">
-          ✓
-        </button>
-      </div>
-
-      <div class="exercise">
-        <div>
-          <b>3. Pull-up</b>
-          <small>3 × 6–8 · lichaamsgewicht</small>
-        </div>
-
-        <button type="button" class="check">
-          ✓
-        </button>
-      </div>
-
-      <div class="exercise">
-        <div>
-          <b>4. Shoulder press</b>
-          <small>3 × 8 · RPE 7</small>
-        </div>
-
-        <button type="button" class="check">
-          ✓
-        </button>
-      </div>
-
-    </div>
-
-    <div class="rpeContainer">
-
-      <div class="rpeTop">
-        <span>Hoe zwaar voelde de training?</span>
-
-        <strong>
-          <span id="rpeValue">7</span>/10
-        </strong>
-      </div>
-
-      <input
-        class="rpe"
-        id="rpeSlider"
-        type="range"
-        min="1"
-        max="10"
-        value="7"
-      >
-
-    </div>
-
-    <button type="button" class="button dark full" id="finishWorkoutButton">
-      Training afronden
-    </button>
-
-  </div>
-
+<div class="card"><div class="eyebrow">VANDAAG</div><h2 id="workoutTitle">Full body strength</h2><p class="muted" id="workoutSubtitle">Focus op kwaliteit en gecontroleerde herhalingen.</p><div id="exerciseList" class="exerciseList"></div><div class="rpeContainer"><div class="rpeTop"><span>Hoe zwaar voelde de training?</span><strong><span id="rpeValue">7</span>/10</strong></div><input id="rpe" class="rpe" type="range" min="1" max="10" value="7" oninput="document.getElementById('rpeValue').textContent=this.value"></div><button class="button dark full" onclick="finishWorkout()">Training afronden</button></div>
 </section>
 
 <section id="coach" class="screen">
-
-  <div class="card">
-
-    <div class="eyebrow">
-      PERSOONLIJKE COACH
-    </div>
-
-    <h2>
-      Wat is er veranderd?
-    </h2>
-
-    <p class="muted">
-      Vertel wat er vandaag anders is. De coach gebruikt die
-      informatie om je planning aan te passen.
-    </p>
-
-    <div class="chat" id="chat">
-
-      <div class="message coachMessage">
-        Je ligt op schema. Wat is er vandaag veranderd?
-      </div>
-
-      <div class="message coachMessage">
-        Bijvoorbeeld: "Ik heb maar 25 minuten", "ik ben moe"
-        of "ik kan donderdag niet".
-      </div>
-
-    </div>
-
-    <div class="chatInput">
-
-      <input
-        id="chatMessage"
-        placeholder="Vertel je coach wat er verandert..."
-      >
-
-      <button type="button" class="button dark" id="sendMessageButton">
-        Stuur
-      </button>
-
-    </div>
-
-  </div>
-
+<div class="card"><div class="eyebrow">PERSOONLIJKE COACH</div><h2>Wat is er veranderd?</h2><p class="muted">Vertel wat er vandaag anders is. De demo-coach gebruikt je bericht om een praktische aanpassing voor te stellen.</p><div class="chat" id="chat"><div class="message coachMessage">Je ligt op schema. Wat is er vandaag veranderd?</div><div class="message coachMessage">Bijvoorbeeld: “Ik heb maar 25 minuten”, “ik ben moe” of “ik kan donderdag niet”.</div></div><div class="chatInput"><input id="chatMessage" placeholder="Vertel je coach wat er verandert..." onkeydown="if(event.key==='Enter')sendMessage()"><button class="button dark" onclick="sendMessage()">Stuur</button></div><div class="notice">Dit is een front-end demo. Er is nog geen echte AI-API gekoppeld. Voor een productieversie kun je hier een veilige backend + AI-model achter zetten.</div></div>
 </section>
 
 <section id="profile" class="screen">
-
-  <div class="card">
-
-    <div class="eyebrow">
-      PROFIEL
-    </div>
-
-    <h2>
-      Maak je coach persoonlijk.
-    </h2>
-
-    <div class="formGrid">
-
-      <div class="field">
-
-        <label for="name">
-          Naam
-        </label>
-
-        <input
-          id="name"
-          value="Alex"
-        >
-
-      </div>
-
-      <div class="field">
-
-        <label for="level">
-          Trainingsniveau
-        </label>
-
-        <select id="level">
-
-          <option>Beginner</option>
-          <option selected>Intermediate</option>
-          <option>Advanced</option>
-
-        </select>
-
-      </div>
-
-    </div>
-
-    <div class="field" style="margin-top:20px">
-
-      <label>
-        Hoofddoel
-      </label>
-
-      <div class="choices goalChoices">
-
-        <button type="button" class="choice selected">Sterker worden</button>
-        <button type="button" class="choice">Spiermassa</button>
-        <button type="button" class="choice">10K</button>
-        <button type="button" class="choice">HYROX</button>
-        <button type="button" class="choice">Algemeen fit</button>
-
-      </div>
-
-    </div>
-
-    <div class="field" style="margin-top:20px">
-
-      <label>
-        Beschikbare dagen
-      </label>
-
-      <div class="choices dayChoices">
-
-        <button type="button" class="choice selected">Ma</button>
-        <button type="button" class="choice">Di</button>
-        <button type="button" class="choice selected">Wo</button>
-        <button type="button" class="choice">Do</button>
-        <button type="button" class="choice selected">Vr</button>
-        <button type="button" class="choice">Za</button>
-        <button type="button" class="choice">Zo</button>
-
-      </div>
-
-    </div>
-
-    <div class="field" style="margin-top:20px">
-
-      <label for="duration">
-        Maximale trainingstijd
-      </label>
-
-      <select id="duration">
-
-        <option>30 minuten</option>
-        <option selected>45 minuten</option>
-        <option>60 minuten</option>
-        <option>90 minuten</option>
-
-      </select>
-
-    </div>
-
-    <button type="button" class="button dark full" id="saveProfileButton" style="margin-top:20px">
-      Profiel opslaan
-    </button>
-
-  </div>
-
+<div class="card"><div class="eyebrow">PROFIEL</div><h2>Maak je coach persoonlijk.</h2>
+<div class="formGrid">
+<div class="field"><label>Geslacht</label><select id="profileGender"><option>Man</option><option>Vrouw</option><option>Anders</option><option>Zeg ik liever niet</option></select></div>
+<div class="field"><label>Leeftijd</label><input id="profileAge" type="number" min="13" max="100"></div>
+<div class="field"><label>Doel</label><select id="profileGoal"><option>Sterker worden</option><option>Spiermassa</option><option>Afvallen</option><option>10K hardlopen</option><option>Halve marathon</option><option>HYROX</option><option>Algemeen fit</option></select></div>
+<div class="field"><label>Trainingen per week</label><select id="profileFrequency"><option value="2">2×</option><option value="3">3×</option><option value="4">4×</option><option value="5">5×</option><option value="6">6×</option></select></div>
+<div class="field"><label>Maximale sessieduur</label><select id="profileDuration"><option value="20">20 min</option><option value="30">30 min</option><option value="45">45 min</option><option value="60">60 min</option><option value="90">90 min</option></select></div>
+<div class="field"><label>Schema</label><select id="profileSchema"></select></div>
+</div>
+<button class="button dark full" style="margin-top:20px" onclick="saveProfile()">Profiel opslaan & schema aanpassen</button>
+</div>
 </section>
-
-</main>
-</div>
-</div>
-
+</main></div></div>
 <div class="toast" id="toast"></div>
 
 <script>
-"use strict";
+const state={
+  gender:"",age:"",goal:"",frequency:3,duration:45,schema:"Full body",sessions:0,totalMinutes:0,rpes:[]
+};
+const schemaData=[
+ {name:"Full body",desc:"Elke training het hele lichaam. Efficiënt en geschikt voor 2–4 dagen.",goals:["Sterker worden","Spiermassa","Algemeen fit","Afvallen"]},
+ {name:"Upper / Lower",desc:"Bovenlichaam en onderlichaam afwisselen. Sterke basis voor 4 dagen.",goals:["Sterker worden","Spiermassa","Algemeen fit"]},
+ {name:"Push / Pull / Legs",desc:"Drie duidelijke trainingsblokken voor meer volume en structuur.",goals:["Spiermassa","Sterker worden"]},
+ {name:"Strength",desc:"Laag tot gemiddeld volume met focus op progressieve kracht.",goals:["Sterker worden"]},
+ {name:"Hypertrophy",desc:"Meer trainingsvolume met focus op spiergroei.",goals:["Spiermassa"]},
+ {name:"Running 10K",desc:"Opbouw met rustige kilometers, tempo en herstel.",goals:["10K hardlopen"]},
+ {name:"Half Marathon",desc:"Geleidelijke duur- en tempobelasting richting 21,1 km.",goals:["Halve marathon"]},
+ {name:"HYROX",desc:"Combinatie van hardlopen, kracht en conditionele blokken.",goals:["HYROX"]},
+ {name:"Hybrid fitness",desc:"Kracht en conditie gecombineerd voor een brede basis.",goals:["Algemeen fit","Afvallen","HYROX"]}
+];
 
-/* =========================
-   SCREEN NAVIGATION
-========================= */
-
-const screens = document.querySelectorAll(".screen");
-const navButtons = document.querySelectorAll(".navButton");
-
-function openScreen(id) {
-
-  const target = document.getElementById(id);
-
-  if (!target) {
-    return;
-  }
-
-  screens.forEach(function(screen) {
-    screen.classList.remove("active");
-  });
-
-  target.classList.add("active");
-
-  navButtons.forEach(function(button) {
-    button.classList.toggle(
-      "active",
-      button.dataset.screen === id
-    );
-  });
-
-  window.scrollTo({
-    top: 0,
-    behavior: "smooth"
-  });
+let setupStep=1;
+function toast(msg){const e=document.getElementById("toast");e.textContent=msg;e.style.display="block";clearTimeout(window.tt);window.tt=setTimeout(()=>e.style.display="none",2800)}
+function openScreen(id){
+ document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("active",s.id===id));
+ document.querySelectorAll(".navButton").forEach(b=>b.classList.toggle("active",b.dataset.screen===id));
+ window.scrollTo({top:0,behavior:"smooth"});
 }
+document.querySelectorAll(".navButton").forEach(b=>b.addEventListener("click",()=>openScreen(b.dataset.screen)));
 
-navButtons.forEach(function(button) {
-
-  button.addEventListener("click", function() {
-    openScreen(button.dataset.screen);
-  });
-
+function choose(group,value){
+ document.querySelectorAll(`[data-single="${group}"] .choice`).forEach(b=>b.classList.remove("selected"));
+ const btn=document.querySelector(`[data-single="${group}"] .choice[data-value="${CSS.escape(value)}"]`);
+ if(btn)btn.classList.add("selected");
+ state[group]=value;
+}
+document.querySelectorAll(".choices[data-single]").forEach(group=>{
+ group.querySelectorAll(".choice").forEach(b=>b.addEventListener("click",()=>choose(group.dataset.single,b.dataset.value)));
 });
 
-
-/* =========================
-   QUICK NAVIGATION BUTTONS
-========================= */
-
-document.querySelectorAll("[data-go]").forEach(function(button) {
-
-  button.addEventListener("click", function() {
-    openScreen(button.dataset.go);
-  });
-
-});
-
-
-/* =========================
-   TOAST
-========================= */
-
-let toastTimer;
-
-function toast(message) {
-
-  const element = document.getElementById("toast");
-
-  element.textContent = message;
-  element.style.display = "block";
-
-  clearTimeout(toastTimer);
-
-  toastTimer = setTimeout(function() {
-    element.style.display = "none";
-  }, 3000);
+function renderSchemaChoices(){
+ const container=document.getElementById("schemaChoices");container.innerHTML="";
+ const relevant=schemaData.filter(s=>!state.goal||s.goals.includes(state.goal));
+ const list=relevant.length?relevant:schemaData;
+ list.forEach(s=>{
+  const b=document.createElement("button");b.className="schema"+(state.schema===s.name?" selected":"");
+  b.innerHTML=`<strong>${s.name}</strong><span>${s.desc}</span>`;
+  b.onclick=()=>{state.schema=s.name;renderSchemaChoices()};
+  container.appendChild(b);
+ });
 }
-
-
-/* =========================
-   EXERCISES
-========================= */
-
-document.querySelectorAll(".check").forEach(function(button) {
-
-  button.addEventListener("click", function() {
-
-    button.classList.toggle("done");
-
-    if (button.classList.contains("done")) {
-      toast("Oefening voltooid.");
-    } else {
-      toast("Oefening opnieuw geopend.");
-    }
-
-  });
-
-});
-
-
-/* =========================
-   RPE
-========================= */
-
-const rpeSlider = document.getElementById("rpeSlider");
-const rpeValue = document.getElementById("rpeValue");
-
-if (rpeSlider) {
-
-  rpeSlider.addEventListener("input", function() {
-    rpeValue.textContent = rpeSlider.value;
-  });
-
+function updateSetupUI(){
+ document.querySelectorAll(".step").forEach(s=>s.classList.toggle("active",s.id==="step"+setupStep));
+ for(let i=1;i<=5;i++)document.getElementById("p"+i).classList.toggle("active",i<=setupStep);
+ document.getElementById("backSetup").style.visibility=setupStep===1?"hidden":"visible";
+ document.getElementById("nextSetup").textContent=setupStep===5?"Maak mijn plan":"Volgende";
+ if(setupStep===5)renderSchemaChoices();
 }
-
-
-/* =========================
-   FINISH WORKOUT
-========================= */
-
-const finishWorkoutButton =
-  document.getElementById("finishWorkoutButton");
-
-if (finishWorkoutButton) {
-
-  finishWorkoutButton.addEventListener("click", function() {
-
-    const rpe = rpeSlider.value;
-
-    toast(
-      "Training opgeslagen. RPE " +
-      rpe +
-      "/10. Je volgende training wordt hierop aangepast."
-    );
-
-  });
-
+function nextSetup(){
+ if(setupStep===1&&!state.gender)return toast("Kies eerst een optie.");
+ if(setupStep===2){const a=Number(document.getElementById("setupAge").value);if(!a||a<13||a>100)return toast("Vul een geldige leeftijd in.");state.age=a}
+ if(setupStep===3&&!state.goal)return toast("Kies eerst je doel.");
+ if(setupStep===4&&!state.frequency)return toast("Kies hoeveel keer je wilt trainen.");
+ if(setupStep===5){if(!state.duration)return toast("Kies een sessieduur.");finishSetup();return}
+ setupStep++;updateSetupUI();
 }
-
-
-/* =========================
-   RESCHEDULE
-========================= */
-
-const rescheduleButton =
-  document.getElementById("rescheduleButton");
-
-if (rescheduleButton) {
-
-  rescheduleButton.addEventListener("click", function() {
-
-    toast(
-      "Training verschoven. De trainingsbelasting wordt opnieuw over je week verdeeld."
-    );
-
-  });
-
+function prevSetup(){if(setupStep>1){setupStep--;updateSetupUI()}}
+document.querySelectorAll('[data-single="duration"] .choice').forEach(b=>b.addEventListener("click",()=>choose("duration",b.dataset.value)));
+function finishSetup(){
+ state.frequency=Number(state.frequency);state.duration=Number(state.duration);
+ if(!state.schema){const rel=schemaData.find(s=>s.goals.includes(state.goal));state.schema=rel?rel.name:"Full body"}
+ document.getElementById("onboarding").classList.add("hidden");
+ populateProfile();renderApp();toast("Je persoonlijke schema is aangemaakt.");
 }
-
-
-/* =========================
-   PROFILE GOALS
-========================= */
-
-document.querySelectorAll(".goalChoices .choice").forEach(function(button) {
-
-  button.addEventListener("click", function() {
-
-    document
-      .querySelectorAll(".goalChoices .choice")
-      .forEach(function(item) {
-        item.classList.remove("selected");
-      });
-
-    button.classList.add("selected");
-
-  });
-
-});
-
-
-/* =========================
-   PROFILE DAYS
-========================= */
-
-document.querySelectorAll(".dayChoices .choice").forEach(function(button) {
-
-  button.addEventListener("click", function() {
-    button.classList.toggle("selected");
-  });
-
-});
-
-
-/* =========================
-   PROFILE SAVE
-========================= */
-
-const saveProfileButton =
-  document.getElementById("saveProfileButton");
-
-if (saveProfileButton) {
-
-  saveProfileButton.addEventListener("click", function() {
-
-    const name =
-      document.getElementById("name").value.trim();
-
-    const level =
-      document.getElementById("level").value;
-
-    const duration =
-      document.getElementById("duration").value;
-
-    localStorage.setItem("adaptiveCoachName", name);
-    localStorage.setItem("adaptiveCoachLevel", level);
-    localStorage.setItem("adaptiveCoachDuration", duration);
-
-    toast(
-      "Profiel opgeslagen" +
-      (name ? " voor " + name : "") +
-      "."
-    );
-
-  });
-
+function populateProfile(){
+ document.getElementById("profileGender").value=state.gender;
+ document.getElementById("profileAge").value=state.age;
+ document.getElementById("profileGoal").value=state.goal;
+ document.getElementById("profileFrequency").value=state.frequency;
+ document.getElementById("profileDuration").value=state.duration;
+ const sel=document.getElementById("profileSchema");sel.innerHTML=schemaData.map(s=>`<option>${s.name}</option>`).join("");sel.value=state.schema;
 }
-
-
-/* =========================
-   LOAD PROFILE
-========================= */
-
-const savedName =
-  localStorage.getItem("adaptiveCoachName");
-
-const savedLevel =
-  localStorage.getItem("adaptiveCoachLevel");
-
-const savedDuration =
-  localStorage.getItem("adaptiveCoachDuration");
-
-if (savedName) {
-  document.getElementById("name").value = savedName;
+function renderApp(){
+ document.getElementById("goalLabel").textContent=state.goal;
+ document.getElementById("todayDuration").textContent=state.duration+" min";
+ document.getElementById("todayMeta").textContent=state.duration+" min · "+state.schema;
+ document.getElementById("todayType").textContent=state.goal.includes("hardlopen")||state.goal==="HYROX"?"Buiten / gym":"Gym";
+ document.getElementById("planTitle").textContent=state.schema+" · "+state.frequency+"× per week";
+ document.getElementById("planSubtitle").textContent=state.duration+" min per sessie · doel: "+state.goal;
+ document.getElementById("goalProgress").textContent=state.sessions?state.sessions+" trainingen":"Start vandaag";
+ document.getElementById("goalHint").textContent=state.sessions+" afgeronde trainingen";
+ document.getElementById("goalBar").style.width=Math.min(100,18+state.sessions*8)+"%";
+ const titleMap={"Running 10K":"10K run","Half Marathon":"Long run","HYROX":"Hybrid conditioning"};
+ const title=titleMap[state.schema]||state.schema;
+ document.getElementById("todayTitle").textContent=title;
+ document.getElementById("workoutTitle").textContent=title;
+ document.getElementById("workoutSubtitle").textContent="Aangepast aan "+state.duration+" minuten, "+state.frequency+" trainingen per week en je doel.";
+ renderWeek();renderExercises();renderAlternatives();
+ document.getElementById("statSessions").textContent=state.sessions;
+ document.getElementById("statTime").textContent=state.totalMinutes+" min";
+ document.getElementById("statRpe").textContent=state.rpes.length?(state.rpes.reduce((a,b)=>a+b,0)/state.rpes.length).toFixed(1):"—";
 }
-
-if (savedLevel) {
-  document.getElementById("level").value = savedLevel;
+function renderWeek(){
+ const list=document.getElementById("weekList");list.innerHTML="";
+ const names=["Maandag","Dinsdag","Woensdag","Donderdag","Vrijdag","Zaterdag","Zondag"];
+ const active=Math.min(6,Math.max(2,Number(state.frequency)||3));
+ const templates=weekTemplates(state.schema);
+ names.forEach((day,i)=>{
+  const train=i<active;
+  const row=document.createElement("div");row.className="day";
+  row.innerHTML=train?`<div><strong>${day} · ${templates[i%templates.length].name}</strong><small>${state.duration} min · ${templates[i%templates.length].focus}</small></div><span class="${i===0?'badge':'pill'}">${i===0?"Vandaag":"Gepland"}</span>`:`<div><strong>${day} · Herstel</strong><small>Rust of lichte beweging</small></div><span class="pill">Rust</span>`;
+  list.appendChild(row);
+ });
 }
-
-if (savedDuration) {
-  document.getElementById("duration").value = savedDuration;
+function weekTemplates(schema){
+ const map={
+  "Full body":[{name:"Full body A",focus:"Kracht"},{name:"Full body B",focus:"Volume"},{name:"Full body C",focus:"Techniek"}],
+  "Upper / Lower":[{name:"Upper",focus:"Bovenlichaam"},{name:"Lower",focus:"Onderlichaam"}],
+  "Push / Pull / Legs":[{name:"Push",focus:"Borst · schouders · triceps"},{name:"Pull",focus:"Rug · biceps"},{name:"Legs",focus:"Benen"}],
+  "Strength":[{name:"Strength A",focus:"Zware compounds"},{name:"Strength B",focus:"Techniek + volume"}],
+  "Hypertrophy":[{name:"Upper volume",focus:"Spiergroei"},{name:"Lower volume",focus:"Spiergroei"},{name:"Full body volume",focus:"Volume"}],
+  "Running 10K":[{name:"Easy run",focus:"Rustige kilometers"},{name:"Tempo",focus:"Tempo"},{name:"Long run",focus:"Duur"}],
+  "Half Marathon":[{name:"Easy run",focus:"Herstel"},{name:"Tempo",focus:"Drempel"},{name:"Long run",focus:"Duur"}],
+  "HYROX":[{name:"Strength",focus:"Kracht"},{name:"Intervals",focus:"Conditioning"},{name:"HYROX mix",focus:"Combinatie"}],
+  "Hybrid fitness":[{name:"Strength",focus:"Kracht"},{name:"Conditioning",focus:"Conditie"},{name:"Hybrid",focus:"Combinatie"}]
+ };
+ return map[schema]||map["Full body"];
 }
-
-
-/* =========================
-   AI COACH
-========================= */
-
-function addMessage(text, className) {
-
-  const chat =
-    document.getElementById("chat");
-
-  const message =
-    document.createElement("div");
-
-  message.className =
-    "message " + className;
-
-  message.textContent = text;
-
-  chat.appendChild(message);
-
-  chat.scrollTop =
-    chat.scrollHeight;
+function renderExercises(){
+ const list=document.getElementById("exerciseList");list.innerHTML="";
+ let exercises;
+ if(state.schema.includes("Run")) exercises=[["Easy run","25 min · rustig tempo"],["Strides","4 × 20 sec · ontspannen"],["Mobility","5 min · herstel"]];
+ else if(state.schema==="Half Marathon") exercises=[["Easy run","20 min · rustig"],["Tempo","3 × 4 min · stevig"],["Mobility","5 min · herstel"]];
+ else if(state.schema==="HYROX") exercises=[["Run","800 m · gecontroleerd"],["Sled / squat","3 × 8 · technisch"],["Row","3 × 500 m · stevig"],["Farmer carry","3 × 30 m · stabiel"]];
+ else if(state.schema==="Push / Pull / Legs") exercises=[["Bench press","4 × 6 · RPE 7–8"],["Shoulder press","3 × 8 · RPE 7"],["Incline press","3 × 10 · gecontroleerd"],["Triceps","3 × 12 · gecontroleerd"]];
+ else if(state.schema==="Upper / Lower") exercises=[["Squat","4 × 6 · RPE 7"],["Bench press","4 × 6 · RPE 7–8"],["Row","3 × 8 · gecontroleerd"],["Romanian deadlift","3 × 8 · RPE 7"]];
+ else if(state.schema==="Strength") exercises=[["Squat","4 × 5 · RPE 7–8"],["Bench press","4 × 5 · RPE 7–8"],["Deadlift","3 × 4 · RPE 7"],["Pull-up","3 × 6–8"]];
+ else if(state.schema==="Hypertrophy") exercises=[["Leg press","3 × 10 · RPE 8"],["Bench press","3 × 8 · RPE 8"],["Lat pulldown","3 × 10 · RPE 8"],["Lateral raise","3 × 12 · gecontroleerd"]];
+ else exercises=[["Squat","3 × 6–8 · RPE 7"],["Bench press","3 × 6–8 · RPE 7–8"],["Row","3 × 8 · gecontroleerd"],["Romanian deadlift","3 × 8 · RPE 7"]];
+ exercises.forEach((x,i)=>{
+  const row=document.createElement("div");row.className="exercise";
+  row.innerHTML=`<div><b>${i+1}. ${x[0]}</b><small>${x[1]}</small></div><button class="check" onclick="completeExercise(this)">✓</button>`;
+  list.appendChild(row);
+ });
 }
-
-
-function getCoachResponse(text) {
-
-  const lower = text.toLowerCase();
-
-  if (
-    lower.includes("20") ||
-    lower.includes("25") ||
-    lower.includes("30") ||
-    lower.includes("minuut")
-  ) {
-
-    return "Je hebt minder tijd. Ik zou accessoires schrappen en de belangrijkste trainingsprikkel behouden. Maak de training ongeveer 25–30 minuten.";
-
-  }
-
-  if (
-    lower.includes("moe") ||
-    lower.includes("vermoeid") ||
-    lower.includes("slecht geslapen") ||
-    lower.includes("slaap")
-  ) {
-
-    return "Dan verlaag ik vandaag de belasting. Houd de belangrijkste oefeningen, maar verminder volume of intensiteit.";
-
-  }
-
-  if (
-    lower.includes("donderdag") ||
-    lower.includes("vrijdag") ||
-    lower.includes("morgen")
-  ) {
-
-    return "Ik zou de training verplaatsen en de belasting opnieuw over de week verdelen. Je hoeft een gemiste training niet dubbel in te halen.";
-
-  }
-
-  if (
-    lower.includes("knie") ||
-    lower.includes("schouder") ||
-    lower.includes("rug") ||
-    lower.includes("pijn")
-  ) {
-
-    return "Stop met een oefening die pijn veroorzaakt. Kies een pijnvrije variant en laat aanhoudende of ernstige pijn beoordelen door een professional.";
-
-  }
-
-  if (
-    lower.includes("zwaarder") ||
-    lower.includes("makkelijk")
-  ) {
-
-    return "Als je de huidige belasting duidelijk onder je doel-RPE uitvoert, kunnen we de volgende sessie geleidelijk verhogen. Verhoog liever één variabele tegelijk.";
-
-  }
-
-  return "Ik pas je planning aan zonder je einddoel uit het oog te verliezen. Vertel me bijvoorbeeld hoeveel tijd je hebt, hoe je herstel is of wat er aan je planning verandert.";
-
+function completeExercise(btn){btn.classList.toggle("done");if(btn.classList.contains("done"))toast("Oefening voltooid.")}
+function finishWorkout(){
+ const r=Number(document.getElementById("rpe").value);state.sessions++;state.totalMinutes+=Number(state.duration);state.rpes.push(r);renderApp();toast("Training opgeslagen · RPE "+r+"/10.");
 }
-
-
-function sendMessage() {
-
-  const input =
-    document.getElementById("chatMessage");
-
-  const text =
-    input.value.trim();
-
-  if (!text) {
-    return;
-  }
-
-  addMessage(text, "userMessage");
-
-  input.value = "";
-
-  setTimeout(function() {
-
-    addMessage(
-      getCoachResponse(text),
-      "coachMessage"
-    );
-
-  }, 350);
+function renderAlternatives(){
+ const c=document.getElementById("alternativeSchemas");c.innerHTML="";
+ schemaData.filter(s=>s.name!==state.schema).slice(0,6).forEach(s=>{
+  const b=document.createElement("button");b.className="schema";b.innerHTML=`<strong>${s.name}</strong><span>${s.desc}</span>`;
+  b.onclick=()=>{state.schema=s.name;document.getElementById("profileSchema").value=s.name;renderApp();toast("Schema gewijzigd naar "+s.name+".")};
+  c.appendChild(b);
+ });
 }
-
-
-/* =========================
-   CHAT BUTTON + ENTER
-========================= */
-
-const sendMessageButton =
-  document.getElementById("sendMessageButton");
-
-const chatMessage =
-  document.getElementById("chatMessage");
-
-if (sendMessageButton) {
-
-  sendMessageButton.addEventListener(
-    "click",
-    sendMessage
-  );
-
+function saveProfile(){
+ state.gender=document.getElementById("profileGender").value;
+ state.age=Number(document.getElementById("profileAge").value);
+ state.goal=document.getElementById("profileGoal").value;
+ state.frequency=Number(document.getElementById("profileFrequency").value);
+ state.duration=Number(document.getElementById("profileDuration").value);
+ state.schema=document.getElementById("profileSchema").value;
+ if(!state.age||state.age<13||state.age>100)return toast("Vul een geldige leeftijd in.");
+ renderApp();toast("Profiel opgeslagen en schema aangepast.");
 }
-
-if (chatMessage) {
-
-  chatMessage.addEventListener(
-    "keydown",
-    function(event) {
-
-      if (event.key === "Enter") {
-        event.preventDefault();
-        sendMessage();
-      }
-
-    }
-  );
-
+function sendMessage(){
+ const input=document.getElementById("chatMessage"),text=input.value.trim();if(!text)return;
+ addMessage(text,"userMessage");input.value="";
+ const lower=text.toLowerCase();let response="Ik zou je plan aanpassen zonder je belangrijkste trainingsprikkel kwijt te raken.";
+ if(/20|25|30|minuut/.test(lower))response="Je hebt minder tijd. Behoud de 2–3 belangrijkste oefeningen en verkort accessoires. Zo blijft de kern van je training behouden.";
+ else if(/moe|vermoeid|slaap/.test(lower))response="Verlaag vandaag de belasting. Houd techniek en belangrijke bewegingen, maar verminder sets of intensiteit. Herstel gaat voor.";
+ else if(/donderdag|vrijdag|morgen|weekend/.test(lower))response="Verplaats de sessie naar een beschikbare dag en probeer gemiste volume niet dubbel in te halen.";
+ else if(/zwaarder|makkelijk/.test(lower))response="Als je meerdere sessies ruim onder je doel-RPE zit, kun je de belasting geleidelijk verhogen. Verhoog liever één variabele tegelijk.";
+ else if(/knie|schouder|rug|pijn/.test(lower))response="Stop met een oefening die pijn veroorzaakt. Kies alleen een pijnvrije variant; bij aanhoudende of ernstige pijn is professionele beoordeling verstandig.";
+ setTimeout(()=>addMessage(response,"coachMessage"),300);
 }
+function addMessage(text,cls){const m=document.createElement("div");m.className="message "+cls;m.textContent=text;const c=document.getElementById("chat");c.appendChild(m);c.scrollTop=c.scrollHeight}
 
+document.getElementById("profileGoal").addEventListener("change",()=>{state.goal=document.getElementById("profileGoal").value});
+document.getElementById("profileSchema").innerHTML=schemaData.map(s=>`<option>${s.name}</option>`).join("");
+updateSetupUI();
 </script>
-
 </body>
 </html>
+'''
+path=Path("/mnt/data/index.html")
+path.write_text(html, encoding="utf-8")
+print(f"Klaar: {path}")
