@@ -1,352 +1,2628 @@
-from pathlib import Path
-
-html = r'''<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Adaptive Coach">
 <meta name="theme-color" content="#f5f5f0">
+
 <title>Adaptive Coach</title>
+
 <style>
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-:root{--bg:#f5f5f0;--card:#fff;--text:#111;--muted:#707069;--border:#e3e3dc;--soft:#efefea;--green:#dff2e4;--greenText:#18572e}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
-button,input,select{font:inherit}button{cursor:pointer}
-button:active{transform:scale(.98)}
-.app{width:min(1180px,calc(100% - 28px));margin:auto;padding-bottom:45px}
-.header{height:76px;display:flex;align-items:center;justify-content:space-between}
-.logo{font-size:21px;font-weight:900;letter-spacing:-1px}.logo span{opacity:.35}
-.headerRight{font-size:12px;color:var(--muted)}
-.layout{display:grid;grid-template-columns:220px 1fr;gap:18px}
-.sidebar{height:max-content;position:sticky;top:16px;background:#fff;border:1px solid var(--border);border-radius:22px;padding:9px}
-.navButton{display:block;width:100%;border:0;background:transparent;color:#686862;text-align:left;padding:13px;border-radius:12px;font-weight:800;margin-bottom:3px}
-.navButton.active,.navButton:hover{background:#eeeeea;color:#111}
-.screen{display:none}.screen.active{display:block}
-.hero{position:relative;overflow:hidden;background:#111;color:#fff;border-radius:28px;padding:40px;margin-bottom:18px}
-.hero:after{content:"";position:absolute;width:350px;height:350px;border:1px solid rgba(255,255,255,.1);border-radius:50%;right:-130px;top:-150px}
-.eyebrow{font-size:11px;font-weight:900;letter-spacing:1.8px;opacity:.55}
-.hero h1{max-width:760px;margin:14px 0;font-size:clamp(40px,6vw,64px);line-height:.95;letter-spacing:-3px}
-.hero p{max-width:690px;color:#c8c8c2;font-size:17px;line-height:1.55}
-.button{border:0;border-radius:13px;padding:14px 18px;font-weight:850;transition:.15s}.button:hover{transform:translateY(-1px)}
-.button.dark{background:#111;color:#fff}.button.light{background:#fff;color:#111}.button.outline{background:#fff;color:#111;border:1px solid var(--border)}.button.full{width:100%}
-.grid{display:grid;grid-template-columns:1.3fr .7fr;gap:18px}
-.card{background:#fff;border:1px solid var(--border);border-radius:24px;padding:23px;margin-bottom:18px}
-.card h2{margin:0 0 6px;font-size:24px;letter-spacing:-.8px}.muted{color:var(--muted)}
-.today{border:1px solid var(--border);border-radius:20px;padding:22px;margin-top:16px}
-.title{font-size:31px;font-weight:900;letter-spacing:-1px;margin:7px 0}
-.meta{display:flex;flex-wrap:wrap;gap:8px;margin:13px 0}.pill{background:var(--soft);padding:7px 11px;border-radius:999px;font-size:12px;font-weight:800}
-.progress{height:9px;background:var(--soft);border-radius:99px;overflow:hidden;margin-top:14px}.progress span{display:block;height:100%;background:#111}
-.coach{display:flex;gap:11px;margin-top:20px}.avatar{width:40px;height:40px;border-radius:13px;background:#111;color:#fff;display:grid;place-items:center;font-weight:900;flex-shrink:0}.coach p{margin:0;line-height:1.5}
-.week{display:grid;gap:8px;margin-top:16px}.day{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:15px;border:1px solid var(--border);border-radius:15px;background:#fafaf7}.day strong{display:block}.day small{display:block;color:var(--muted);margin-top:4px}
-.badge{background:var(--green);color:var(--greenText);border-radius:999px;padding:6px 9px;font-size:11px;font-weight:900}
-.exerciseList{display:grid;gap:9px;margin-top:18px}.exercise{display:flex;justify-content:space-between;align-items:center;gap:15px;padding:17px;border:1px solid var(--border);border-radius:16px}.exercise b{display:block}.exercise small{display:block;margin-top:4px;color:var(--muted)}
-.check{width:37px;height:37px;border-radius:50%;background:#fff;border:1px solid var(--border);font-weight:900;flex-shrink:0}.check.done{background:#111;color:#fff}
-.rpeContainer{margin:22px 0}.rpeTop{display:flex;justify-content:space-between;font-size:14px;font-weight:750}.rpe{width:100%;margin-top:12px}
-.chat{min-height:300px;max-height:430px;overflow-y:auto;background:#fafaf7;border:1px solid var(--border);border-radius:18px;padding:15px;display:flex;flex-direction:column;gap:9px}.message{max-width:82%;padding:11px 14px;border-radius:15px;line-height:1.45}.coachMessage{background:#fff;border:1px solid var(--border)}.userMessage{background:#111;color:#fff;margin-left:auto}
-.chatInput{display:flex;gap:8px;margin-top:10px}.chatInput input{min-width:0;flex:1;border:1px solid var(--border);border-radius:13px;padding:13px;outline:none}
-.formGrid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:grid;gap:7px}.field label{font-size:12px;font-weight:850}.field input,.field select{width:100%;border:1px solid var(--border);border-radius:12px;padding:13px;background:#fff;outline:none}
-.choices{display:flex;flex-wrap:wrap;gap:8px}.choice{border:1px solid var(--border);background:#fff;border-radius:12px;padding:11px 13px;font-weight:750}.choice.selected{background:#111;color:#fff;border-color:#111}
-.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:18px}.stat{padding:17px;background:#fafaf7;border:1px solid var(--border);border-radius:15px}.statNumber{font-size:27px;font-weight:900}.statLabel{color:var(--muted);font-size:12px;margin-top:3px}
-.toast{position:fixed;z-index:100;bottom:22px;right:22px;max-width:350px;background:#111;color:#fff;padding:14px 17px;border-radius:14px;font-weight:750;display:none;box-shadow:0 12px 40px rgba(0,0,0,.2)}
-.onboarding{position:fixed;inset:0;z-index:200;background:rgba(245,245,240,.98);display:flex;align-items:center;justify-content:center;padding:18px;overflow:auto}
-.onboarding.hidden{display:none}.setup{width:min(760px,100%);background:#fff;border:1px solid var(--border);border-radius:28px;padding:30px;box-shadow:0 20px 70px rgba(0,0,0,.08)}
-.setup h1{font-size:clamp(34px,6vw,54px);line-height:1;letter-spacing:-2px;margin:12px 0}.setup p{color:var(--muted);line-height:1.5}
-.step{display:none}.step.active{display:block}.stepTitle{font-size:23px;font-weight:900;margin:25px 0 12px}.setupActions{display:flex;gap:9px;margin-top:24px}.setupActions .button{flex:1}
-.progressSteps{display:flex;gap:6px;margin:18px 0}.progressSteps i{height:5px;flex:1;background:var(--soft);border-radius:10px}.progressSteps i.active{background:#111}
-.schemaGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:15px}.schema{border:1px solid var(--border);background:#fff;border-radius:17px;padding:16px;text-align:left}.schema.selected{border:2px solid #111;padding:15px}.schema strong{display:block}.schema span{display:block;color:var(--muted);font-size:12px;margin-top:5px;line-height:1.4}
-.sectionHead{display:flex;justify-content:space-between;gap:12px;align-items:end;margin-bottom:15px}.smallButton{border:1px solid var(--border);background:#fff;border-radius:10px;padding:9px 12px;font-weight:800}
-.notice{padding:14px;border-radius:15px;background:#f1f1ec;margin-top:15px;line-height:1.45;font-size:13px}
-@media(max-width:820px){.app{width:min(100% - 18px,650px)}.header{height:64px}.layout{grid-template-columns:1fr}.sidebar{position:static;display:flex;overflow-x:auto;gap:3px;padding:7px}.navButton{width:auto;white-space:nowrap;margin:0}.grid{grid-template-columns:1fr}.hero{padding:28px 23px}.formGrid{grid-template-columns:1fr}}
-@media(max-width:480px){.headerRight{display:none}.hero h1{font-size:42px}.card{padding:18px;border-radius:20px}.today{padding:18px}.stats{grid-template-columns:1fr}.chatInput{flex-direction:column}.chatInput .button{width:100%}.schemaGrid{grid-template-columns:1fr}.setup{padding:22px}.setupActions{flex-direction:column}}
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+:root{
+  --bg:#f5f5f0;
+  --card:#fff;
+  --text:#111;
+  --muted:#73736c;
+  --border:#e1e1d9;
+  --soft:#eeeeea;
+  --dark:#111;
+  --green:#dff2e4;
+  --greenText:#18572e;
+  --danger:#f7dddd;
+  --dangerText:#7d2222;
+}
+
+html{
+  scroll-behavior:smooth;
+}
+
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
+}
+
+button,input,select{
+  font:inherit;
+}
+
+button{
+  cursor:pointer;
+}
+
+button:active{
+  transform:scale(.98);
+}
+
+.hidden{
+  display:none!important;
+}
+
+/* =========================
+   ONBOARDING
+========================= */
+
+.onboarding{
+  min-height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:25px 15px;
+}
+
+.onboardingBox{
+  width:min(700px,100%);
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:28px;
+  padding:35px;
+  box-shadow:0 20px 60px rgba(0,0,0,.06);
+}
+
+.brand{
+  font-size:24px;
+  font-weight:950;
+  letter-spacing:-1.5px;
+  margin-bottom:40px;
+}
+
+.brand span{
+  opacity:.35;
+}
+
+.step{
+  display:none;
+}
+
+.step.active{
+  display:block;
+}
+
+.stepNumber{
+  color:var(--muted);
+  font-size:12px;
+  font-weight:850;
+  letter-spacing:1.5px;
+  text-transform:uppercase;
+}
+
+.onboarding h1{
+  font-size:clamp(34px,7vw,56px);
+  line-height:.98;
+  letter-spacing:-2.5px;
+  margin:12px 0;
+}
+
+.onboardingText{
+  color:var(--muted);
+  line-height:1.55;
+  font-size:16px;
+  margin-bottom:28px;
+}
+
+.formLabel{
+  display:block;
+  font-size:13px;
+  font-weight:850;
+  margin-bottom:9px;
+}
+
+.choiceGrid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+}
+
+.choice{
+  border:1px solid var(--border);
+  background:#fff;
+  color:#111;
+  padding:15px;
+  border-radius:14px;
+  text-align:left;
+  font-weight:800;
+  transition:.15s;
+}
+
+.choice:hover{
+  border-color:#aaa;
+}
+
+.choice.selected{
+  background:#111;
+  color:#fff;
+  border-color:#111;
+}
+
+.bigInput,
+.bigSelect{
+  width:100%;
+  border:1px solid var(--border);
+  background:#fff;
+  padding:16px;
+  border-radius:14px;
+  outline:none;
+}
+
+.bigInput:focus,
+.bigSelect:focus{
+  border-color:#888;
+}
+
+.rangeValue{
+  font-size:38px;
+  font-weight:950;
+  margin:15px 0;
+}
+
+input[type="range"]{
+  width:100%;
+  accent-color:#111;
+}
+
+.onboardingButtons{
+  display:flex;
+  gap:10px;
+  margin-top:30px;
+}
+
+.button{
+  border:0;
+  border-radius:13px;
+  padding:14px 18px;
+  font-weight:850;
+  transition:.15s;
+}
+
+.button.dark{
+  background:#111;
+  color:#fff;
+}
+
+.button.light{
+  background:#fff;
+  color:#111;
+  border:1px solid var(--border);
+}
+
+.button.full{
+  width:100%;
+}
+
+.progressSteps{
+  display:flex;
+  gap:6px;
+  margin-bottom:30px;
+}
+
+.progressDot{
+  height:5px;
+  flex:1;
+  border-radius:99px;
+  background:var(--soft);
+}
+
+.progressDot.active{
+  background:#111;
+}
+
+/* =========================
+   APP
+========================= */
+
+.app{
+  width:min(1180px,calc(100% - 28px));
+  margin:auto;
+  padding-bottom:40px;
+}
+
+.header{
+  height:76px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.logo{
+  font-size:21px;
+  font-weight:950;
+  letter-spacing:-1px;
+}
+
+.logo span{
+  opacity:.35;
+}
+
+.headerRight{
+  font-size:12px;
+  color:var(--muted);
+}
+
+.layout{
+  display:grid;
+  grid-template-columns:220px 1fr;
+  gap:18px;
+}
+
+.sidebar{
+  height:max-content;
+  position:sticky;
+  top:16px;
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:10px;
+}
+
+.navButton{
+  display:block;
+  width:100%;
+  border:0;
+  background:transparent;
+  color:#686862;
+  text-align:left;
+  padding:13px;
+  border-radius:12px;
+  font-weight:750;
+  margin-bottom:3px;
+}
+
+.navButton.active{
+  background:#eeeeea;
+  color:#111;
+}
+
+.screen{
+  display:none;
+}
+
+.screen.active{
+  display:block;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero{
+  position:relative;
+  overflow:hidden;
+  background:#111;
+  color:#fff;
+  border-radius:28px;
+  padding:40px;
+  margin-bottom:18px;
+}
+
+.hero:after{
+  content:"";
+  position:absolute;
+  width:350px;
+  height:350px;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:50%;
+  right:-130px;
+  top:-150px;
+}
+
+.eyebrow{
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:1.8px;
+  opacity:.55;
+}
+
+.hero h1{
+  max-width:700px;
+  margin:14px 0;
+  font-size:clamp(40px,6vw,64px);
+  line-height:.95;
+  letter-spacing:-3px;
+}
+
+.hero p{
+  max-width:650px;
+  color:#c8c8c2;
+  font-size:17px;
+  line-height:1.55;
+}
+
+.grid{
+  display:grid;
+  grid-template-columns:1.3fr .7fr;
+  gap:18px;
+}
+
+.card{
+  background:#fff;
+  border:1px solid var(--border);
+  border-radius:24px;
+  padding:23px;
+  margin-bottom:18px;
+}
+
+.card h2{
+  margin:0 0 6px;
+  font-size:24px;
+  letter-spacing:-.8px;
+}
+
+.muted{
+  color:var(--muted);
+}
+
+.today{
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:22px;
+  margin-top:16px;
+}
+
+.title{
+  font-size:31px;
+  font-weight:900;
+  letter-spacing:-1px;
+  margin:7px 0;
+}
+
+.meta{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:13px 0;
+}
+
+.pill{
+  background:var(--soft);
+  padding:7px 11px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:800;
+}
+
+.progress{
+  height:9px;
+  background:var(--soft);
+  border-radius:99px;
+  overflow:hidden;
+  margin-top:14px;
+}
+
+.progress span{
+  display:block;
+  height:100%;
+  background:#111;
+  transition:.3s;
+}
+
+.coach{
+  display:flex;
+  gap:11px;
+  margin-top:20px;
+}
+
+.avatar{
+  width:40px;
+  height:40px;
+  border-radius:13px;
+  background:#111;
+  color:#fff;
+  display:grid;
+  place-items:center;
+  font-weight:900;
+  flex-shrink:0;
+}
+
+.coach p{
+  margin:0;
+  line-height:1.5;
+}
+
+/* =========================
+   PLAN
+========================= */
+
+.week{
+  display:grid;
+  gap:9px;
+  margin-top:18px;
+}
+
+.day{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:17px;
+  border:1px solid var(--border);
+  border-radius:16px;
+  background:#fafaf7;
+}
+
+.day strong{
+  display:block;
+}
+
+.day small{
+  display:block;
+  color:var(--muted);
+  margin-top:4px;
+}
+
+.badge{
+  background:var(--green);
+  color:var(--greenText);
+  border-radius:999px;
+  padding:6px 9px;
+  font-size:11px;
+  font-weight:900;
+}
+
+/* =========================
+   SCHEMA CHOICE
+========================= */
+
+.planOptions{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-top:20px;
+}
+
+.planOption{
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:18px;
+  background:#fff;
+  cursor:pointer;
+  transition:.15s;
+}
+
+.planOption:hover{
+  border-color:#999;
+  transform:translateY(-2px);
+}
+
+.planOption.selected{
+  background:#111;
+  color:#fff;
+  border-color:#111;
+}
+
+.planOption h3{
+  margin:0 0 7px;
+}
+
+.planOption p{
+  margin:0;
+  color:var(--muted);
+  line-height:1.45;
+  font-size:13px;
+}
+
+.planOption.selected p{
+  color:#c8c8c2;
+}
+
+/* =========================
+   WORKOUT
+========================= */
+
+.exerciseList{
+  display:grid;
+  gap:9px;
+  margin-top:18px;
+}
+
+.exercise{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:15px;
+  padding:17px;
+  border:1px solid var(--border);
+  border-radius:16px;
+}
+
+.exercise b{
+  display:block;
+}
+
+.exercise small{
+  display:block;
+  margin-top:4px;
+  color:var(--muted);
+}
+
+.check{
+  width:38px;
+  height:38px;
+  border-radius:50%;
+  background:#fff;
+  border:1px solid var(--border);
+  font-weight:900;
+  flex-shrink:0;
+}
+
+.check.done{
+  background:#111;
+  color:#fff;
+}
+
+.rpeContainer{
+  margin:25px 0;
+}
+
+.rpeTop{
+  display:flex;
+  justify-content:space-between;
+  font-size:14px;
+  font-weight:750;
+}
+
+/* =========================
+   CHAT
+========================= */
+
+.chat{
+  min-height:300px;
+  max-height:430px;
+  overflow-y:auto;
+  background:#fafaf7;
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:15px;
+  display:flex;
+  flex-direction:column;
+  gap:9px;
+}
+
+.message{
+  max-width:82%;
+  padding:11px 14px;
+  border-radius:15px;
+  line-height:1.45;
+}
+
+.coachMessage{
+  background:#fff;
+  border:1px solid var(--border);
+}
+
+.userMessage{
+  background:#111;
+  color:#fff;
+  margin-left:auto;
+}
+
+.chatInput{
+  display:flex;
+  gap:8px;
+  margin-top:10px;
+}
+
+.chatInput input{
+  min-width:0;
+  flex:1;
+  border:1px solid var(--border);
+  border-radius:13px;
+  padding:13px;
+  outline:none;
+}
+
+/* =========================
+   PROFILE
+========================= */
+
+.formGrid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:13px;
+}
+
+.field{
+  display:grid;
+  gap:7px;
+}
+
+.field label{
+  font-size:12px;
+  font-weight:850;
+}
+
+.field input,
+.field select{
+  width:100%;
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:13px;
+  background:#fff;
+  outline:none;
+}
+
+.choices{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+}
+
+/* =========================
+   STATS
+========================= */
+
+.stats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:18px;
+}
+
+.stat{
+  padding:17px;
+  background:#fafaf7;
+  border:1px solid var(--border);
+  border-radius:15px;
+}
+
+.statNumber{
+  font-size:27px;
+  font-weight:900;
+}
+
+.statLabel{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:3px;
+}
+
+/* =========================
+   TOAST
+========================= */
+
+.toast{
+  position:fixed;
+  z-index:100;
+  bottom:22px;
+  right:22px;
+  max-width:350px;
+  background:#111;
+  color:#fff;
+  padding:14px 17px;
+  border-radius:14px;
+  font-weight:750;
+  display:none;
+  box-shadow:0 12px 40px rgba(0,0,0,.2);
+}
+
+/* =========================
+   MOBILE
+========================= */
+
+@media(max-width:820px){
+
+  .app{
+    width:min(100% - 18px,650px);
+  }
+
+  .layout{
+    grid-template-columns:1fr;
+  }
+
+  .sidebar{
+    position:static;
+    display:flex;
+    overflow-x:auto;
+    gap:3px;
+    padding:7px;
+  }
+
+  .navButton{
+    width:auto;
+    white-space:nowrap;
+    margin:0;
+  }
+
+  .grid{
+    grid-template-columns:1fr;
+  }
+
+  .hero{
+    padding:28px 23px;
+  }
+
+  .formGrid{
+    grid-template-columns:1fr;
+  }
+
+  .planOptions{
+    grid-template-columns:1fr;
+  }
+}
+
+@media(max-width:480px){
+
+  .onboardingBox{
+    padding:25px 20px;
+  }
+
+  .headerRight{
+    display:none;
+  }
+
+  .hero h1{
+    font-size:42px;
+  }
+
+  .card{
+    padding:18px;
+    border-radius:20px;
+  }
+
+  .today{
+    padding:18px;
+  }
+
+  .stats{
+    grid-template-columns:1fr;
+  }
+
+  .chatInput{
+    flex-direction:column;
+  }
+
+  .chatInput .button{
+    width:100%;
+  }
+
+  .choiceGrid{
+    grid-template-columns:1fr;
+  }
+}
 </style>
 </head>
+
 <body>
 
+<!-- ==================================================
+     ONBOARDING
+================================================== -->
+
 <div id="onboarding" class="onboarding">
-  <div class="setup">
-    <div class="eyebrow">ADAPTIVE COACH</div>
-    <h1>Maak je persoonlijke trainingsplan.</h1>
-    <p>Beantwoord een paar vragen. Daarna kiest Adaptive Coach een passend schema dat je later kunt aanpassen.</p>
-    <div class="progressSteps"><i id="p1" class="active"></i><i id="p2"></i><i id="p3"></i><i id="p4"></i><i id="p5"></i></div>
 
-    <div id="step1" class="step active">
-      <div class="stepTitle">Wat is je geslacht?</div>
-      <div class="choices" data-single="gender">
-        <button class="choice" data-value="Man">Man</button><button class="choice" data-value="Vrouw">Vrouw</button><button class="choice" data-value="Anders">Anders</button><button class="choice" data-value="Zeg ik liever niet">Zeg ik liever niet</button>
-      </div>
-    </div>
+<div class="onboardingBox">
 
-    <div id="step2" class="step">
-      <div class="stepTitle">Hoe oud ben je?</div>
-      <div class="field"><label>Leeftijd</label><input id="setupAge" type="number" min="13" max="100" placeholder="Bijv. 24"></div>
-    </div>
-
-    <div id="step3" class="step">
-      <div class="stepTitle">Wat is je belangrijkste doel?</div>
-      <div class="choices" data-single="goal">
-        <button class="choice" data-value="Sterker worden">Sterker worden</button><button class="choice" data-value="Spiermassa">Spiermassa</button><button class="choice" data-value="Afvallen">Afvallen</button><button class="choice" data-value="10K hardlopen">10K hardlopen</button><button class="choice" data-value="Halve marathon">Halve marathon</button><button class="choice" data-value="HYROX">HYROX</button><button class="choice" data-value="Algemeen fit">Algemeen fit</button>
-      </div>
-    </div>
-
-    <div id="step4" class="step">
-      <div class="stepTitle">Hoe vaak wil je trainen?</div>
-      <div class="choices" data-single="frequency">
-        <button class="choice" data-value="2">2× per week</button><button class="choice" data-value="3">3× per week</button><button class="choice" data-value="4">4× per week</button><button class="choice" data-value="5">5× per week</button><button class="choice" data-value="6">6× per week</button>
-      </div>
-    </div>
-
-    <div id="step5" class="step">
-      <div class="stepTitle">Hoe lang mag een sessie duren?</div>
-      <div class="choices" data-single="duration">
-        <button class="choice" data-value="20">20 min</button><button class="choice" data-value="30">30 min</button><button class="choice" data-value="45">45 min</button><button class="choice" data-value="60">60 min</button><button class="choice" data-value="90">90 min</button>
-      </div>
-      <div class="stepTitle">Kies een schema</div>
-      <div id="schemaChoices" class="schemaGrid"></div>
-    </div>
-
-    <div class="setupActions">
-      <button id="backSetup" class="button outline" onclick="prevSetup()">Terug</button>
-      <button id="nextSetup" class="button dark" onclick="nextSetup()">Volgende</button>
-    </div>
-  </div>
+<div class="brand">
+adaptive<span>coach</span>
 </div>
 
-<div class="app">
-<header class="header"><div class="logo">adaptive<span>coach</span></div><div class="headerRight">Persoonlijke trainingscoach</div></header>
+<div class="progressSteps">
+<div class="progressDot active" id="dot1"></div>
+<div class="progressDot" id="dot2"></div>
+<div class="progressDot" id="dot3"></div>
+<div class="progressDot" id="dot4"></div>
+<div class="progressDot" id="dot5"></div>
+</div>
+
+<!-- STEP 1 -->
+
+<div class="step active" id="step1">
+
+<div class="stepNumber">
+Stap 1 van 5
+</div>
+
+<h1>
+Laten we jouw plan maken.
+</h1>
+
+<p class="onboardingText">
+Beantwoord een paar vragen. Adaptive Coach gebruikt je
+gegevens om een trainingsschema te maken dat past bij jouw
+doel en beschikbare tijd.
+</p>
+
+<label class="formLabel">
+Geslacht
+</label>
+
+<div class="choiceGrid">
+
+<button class="choice genderChoice" data-value="Man">
+Man
+</button>
+
+<button class="choice genderChoice" data-value="Vrouw">
+Vrouw
+</button>
+
+<button class="choice genderChoice" data-value="Anders">
+Anders
+</button>
+
+<button class="choice genderChoice" data-value="Liever niet zeggen">
+Liever niet zeggen
+</button>
+
+</div>
+
+<div class="onboardingButtons">
+
+<button class="button dark full" onclick="nextStep(2)">
+Doorgaan
+</button>
+
+</div>
+
+</div>
+
+
+<!-- STEP 2 -->
+
+<div class="step" id="step2">
+
+<div class="stepNumber">
+Stap 2 van 5
+</div>
+
+<h1>
+Hoe oud ben je?
+</h1>
+
+<p class="onboardingText">
+Je leeftijd helpt om het schema en de trainingsbelasting
+beter af te stemmen.
+</p>
+
+<input
+class="bigInput"
+id="ageInput"
+type="number"
+min="13"
+max="100"
+placeholder="Bijvoorbeeld 25"
+>
+
+<div class="onboardingButtons">
+
+<button class="button light" onclick="nextStep(1)">
+Terug
+</button>
+
+<button class="button dark full" onclick="nextStep(3)">
+Doorgaan
+</button>
+
+</div>
+
+</div>
+
+
+<!-- STEP 3 -->
+
+<div class="step" id="step3">
+
+<div class="stepNumber">
+Stap 3 van 5
+</div>
+
+<h1>
+Wat wil je bereiken?
+</h1>
+
+<p class="onboardingText">
+Kies het belangrijkste doel. Je kunt later je voorkeuren
+aanpassen.
+</p>
+
+<div class="choiceGrid">
+
+<button class="choice goalChoice" data-value="Spiermassa">
+Spiermassa
+</button>
+
+<button class="choice goalChoice" data-value="Sterker worden">
+Sterker worden
+</button>
+
+<button class="choice goalChoice" data-value="Afvallen">
+Afvallen
+</button>
+
+<button class="choice goalChoice" data-value="10K hardlopen">
+10K hardlopen
+</button>
+
+<button class="choice goalChoice" data-value="HYROX">
+HYROX
+</button>
+
+<button class="choice goalChoice" data-value="Algemeen fit">
+Algemeen fit
+</button>
+
+</div>
+
+<div class="onboardingButtons">
+
+<button class="button light" onclick="nextStep(2)">
+Terug
+</button>
+
+<button class="button dark full" onclick="nextStep(4)">
+Doorgaan
+</button>
+
+</div>
+
+</div>
+
+
+<!-- STEP 4 -->
+
+<div class="step" id="step4">
+
+<div class="stepNumber">
+Stap 4 van 5
+</div>
+
+<h1>
+Hoe vaak kun je trainen?
+</h1>
+
+<p class="onboardingText">
+Kies hoeveel trainingen je gemiddeld per week kunt doen.
+</p>
+
+<div class="choiceGrid">
+
+<button class="choice frequencyChoice" data-value="2">
+2 keer per week
+</button>
+
+<button class="choice frequencyChoice" data-value="3">
+3 keer per week
+</button>
+
+<button class="choice frequencyChoice" data-value="4">
+4 keer per week
+</button>
+
+<button class="choice frequencyChoice" data-value="5">
+5 keer per week
+</button>
+
+<button class="choice frequencyChoice" data-value="6">
+6 keer per week
+</button>
+
+</div>
+
+<div style="margin-top:25px">
+
+<label class="formLabel">
+Maximale duur per sessie
+</label>
+
+<select class="bigSelect" id="durationInput">
+
+<option value="30">30 minuten</option>
+<option value="45" selected>45 minuten</option>
+<option value="60">60 minuten</option>
+<option value="75">75 minuten</option>
+<option value="90">90 minuten</option>
+
+</select>
+
+</div>
+
+<div class="onboardingButtons">
+
+<button class="button light" onclick="nextStep(3)">
+Terug
+</button>
+
+<button class="button dark full" onclick="nextStep(5)">
+Doorgaan
+</button>
+
+</div>
+
+</div>
+
+
+<!-- STEP 5 -->
+
+<div class="step" id="step5">
+
+<div class="stepNumber">
+Stap 5 van 5
+</div>
+
+<h1>
+Welke dagen passen bij jou?
+</h1>
+
+<p class="onboardingText">
+Selecteer de dagen waarop je normaal gesproken kunt trainen.
+</p>
+
+<div class="choiceGrid">
+
+<button class="choice dayChoice" data-value="Maandag">
+Maandag
+</button>
+
+<button class="choice dayChoice" data-value="Dinsdag">
+Dinsdag
+</button>
+
+<button class="choice dayChoice" data-value="Woensdag">
+Woensdag
+</button>
+
+<button class="choice dayChoice" data-value="Donderdag">
+Donderdag
+</button>
+
+<button class="choice dayChoice" data-value="Vrijdag">
+Vrijdag
+</button>
+
+<button class="choice dayChoice" data-value="Zaterdag">
+Zaterdag
+</button>
+
+<button class="choice dayChoice" data-value="Zondag">
+Zondag
+</button>
+
+</div>
+
+<div class="onboardingButtons">
+
+<button class="button light" onclick="nextStep(4)">
+Terug
+</button>
+
+<button class="button dark full" onclick="createPlan()">
+Maak mijn persoonlijke plan
+</button>
+
+</div>
+
+</div>
+
+</div>
+</div>
+
+
+<!-- ==================================================
+     MAIN APP
+================================================== -->
+
+<div id="app" class="app hidden">
+
+<header class="header">
+
+<div class="logo">
+adaptive<span>coach</span>
+</div>
+
+<div class="headerRight">
+Persoonlijke trainingscoach
+</div>
+
+</header>
+
+
 <div class="layout">
+
 <nav class="sidebar">
-<button class="navButton active" data-screen="dashboard">Vandaag</button>
-<button class="navButton" data-screen="plan">Mijn plan</button>
-<button class="navButton" data-screen="workout">Training</button>
-<button class="navButton" data-screen="coach">AI Coach</button>
-<button class="navButton" data-screen="profile">Profiel</button>
+
+<button class="navButton active" data-screen="dashboard">
+Vandaag
+</button>
+
+<button class="navButton" data-screen="plan">
+Mijn plan
+</button>
+
+<button class="navButton" data-screen="workout">
+Training
+</button>
+
+<button class="navButton" data-screen="schemas">
+Schema's
+</button>
+
+<button class="navButton" data-screen="coach">
+AI Coach
+</button>
+
+<button class="navButton" data-screen="profile">
+Profiel
+</button>
+
 </nav>
 
+
 <main>
+
+<!-- DASHBOARD -->
+
 <section id="dashboard" class="screen active">
-<div class="hero"><div class="eyebrow">ADAPTIVE COACH</div><h1>Je plan past zich aan jou aan.</h1><p id="heroText">Geen rigide trainingsschema dat je leven dicteert. Je plan houdt rekening met je doel, beschikbare tijd en trainingsfrequentie.</p><button class="button light" onclick="openScreen('workout')">Start mijn training</button></div>
-<div class="grid">
-<div class="card"><h2>Vandaag</h2><p class="muted" id="todayMeta">45 min · Kracht</p><div class="today"><div class="eyebrow">TRAINING A</div><div class="title" id="todayTitle">Full body strength</div><div class="meta"><span class="pill" id="todayDuration">45 min</span><span class="pill">RPE 7–8</span><span class="pill" id="todayType">Gym</span></div><p class="muted" id="todayDescription">Je belangrijkste trainingsprikkel van vandaag.</p><button class="button dark" onclick="openScreen('workout')">Training openen</button></div></div>
-<div class="card"><h2>Jouw doel</h2><p class="muted" id="goalLabel">Sterker worden</p><div style="font-size:34px;font-weight:900;margin-top:12px" id="goalProgress">Start</div><div class="progress"><span id="goalBar" style="width:18%"></span></div><p class="muted" id="goalHint">Je voortgang wordt opgebouwd na iedere training.</p><div class="coach"><div class="avatar">A</div><p><b>Coach:</b> Ik pas volume en intensiteit geleidelijk aan op basis van je trainingen.</p></div></div>
+
+<div class="hero">
+
+<div class="eyebrow">
+ADAPTIVE COACH
 </div>
-<div class="card"><h2>Deze week</h2><div class="stats"><div class="stat"><div class="statNumber" id="statSessions">0</div><div class="statLabel">trainingen afgerond</div></div><div class="stat"><div class="statNumber" id="statTime">0 min</div><div class="statLabel">trainingstijd</div></div><div class="stat"><div class="statNumber" id="statRpe">—</div><div class="statLabel">gemiddelde RPE</div></div></div></div>
+
+<h1 id="heroTitle">
+Je plan past zich aan jou aan.
+</h1>
+
+<p id="heroText">
+Jouw persoonlijke trainingsschema is klaar.
+</p>
+
+<button
+class="button light"
+onclick="openScreen('workout')">
+Start mijn training
+</button>
+
+</div>
+
+
+<div class="grid">
+
+<div class="card">
+
+<h2>
+Vandaag
+</h2>
+
+<p class="muted" id="todayMeta">
+Jouw training
+</p>
+
+<div class="today">
+
+<div class="eyebrow" id="todayEyebrow">
+TRAINING
+</div>
+
+<div class="title" id="todayTitle">
+Training
+</div>
+
+<div class="meta">
+
+<span class="pill" id="todayDuration">
+45 min
+</span>
+
+<span class="pill">
+Persoonlijk
+</span>
+
+<span class="pill" id="todayGoal">
+Jouw doel
+</span>
+
+</div>
+
+<p class="muted" id="todayDescription">
+Je persoonlijke training staat klaar.
+</p>
+
+<button
+class="button dark"
+onclick="openScreen('workout')">
+Training openen
+</button>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>
+Jouw doel
+</h2>
+
+<p class="muted" id="goalText">
+Persoonlijk doel
+</p>
+
+<div style="font-size:32px;font-weight:900;margin-top:15px">
+Op schema
+</div>
+
+<div class="progress">
+<span id="goalProgress" style="width:10%"></span>
+</div>
+
+<p class="muted" id="progressText">
+Je voortgang wordt bijgehouden.
+</p>
+
+<div class="coach">
+
+<div class="avatar">
+A
+</div>
+
+<p id="coachDashboardText">
+Je schema wordt aangepast op basis van je trainingen.
+</p>
+
+</div>
+
+</div>
+
+</div>
+
+
+<div class="card">
+
+<h2>
+Deze week
+</h2>
+
+<div class="stats">
+
+<div class="stat">
+<div class="statNumber" id="statWorkouts">
+0
+</div>
+<div class="statLabel">
+trainingen voltooid
+</div>
+</div>
+
+<div class="stat">
+<div class="statNumber" id="statMinutes">
+0
+</div>
+<div class="statLabel">
+trainingsminuten
+</div>
+</div>
+
+<div class="stat">
+<div class="statNumber" id="statRpe">
+-
+</div>
+<div class="statLabel">
+gemiddelde RPE
+</div>
+</div>
+
+</div>
+
+</div>
+
 </section>
+
+
+<!-- PLAN -->
 
 <section id="plan" class="screen">
-<div class="card"><div class="sectionHead"><div><div class="eyebrow">JOUW PLAN</div><h2 id="planTitle">Persoonlijk weekschema</h2><p class="muted" id="planSubtitle">Je schema wordt afgestemd op je keuzes.</p></div><button class="smallButton" onclick="openScreen('profile')">Aanpassen</button></div><div id="weekList" class="week"></div></div>
-<div class="card"><h2>Andere schema's</h2><p class="muted">Je kunt altijd van aanpak wisselen.</p><div id="alternativeSchemas" class="schemaGrid"></div></div>
+
+<div class="card">
+
+<div class="eyebrow">
+JOUW WEEK
+</div>
+
+<h2>
+Je persoonlijke trainingsweek
+</h2>
+
+<p class="muted" id="planDescription">
+Je schema wordt aangepast aan je voorkeuren.
+</p>
+
+<div class="week" id="weekContainer">
+</div>
+
+</div>
+
 </section>
+
+
+<!-- WORKOUT -->
 
 <section id="workout" class="screen">
-<div class="card"><div class="eyebrow">VANDAAG</div><h2 id="workoutTitle">Full body strength</h2><p class="muted" id="workoutSubtitle">Focus op kwaliteit en gecontroleerde herhalingen.</p><div id="exerciseList" class="exerciseList"></div><div class="rpeContainer"><div class="rpeTop"><span>Hoe zwaar voelde de training?</span><strong><span id="rpeValue">7</span>/10</strong></div><input id="rpe" class="rpe" type="range" min="1" max="10" value="7" oninput="document.getElementById('rpeValue').textContent=this.value"></div><button class="button dark full" onclick="finishWorkout()">Training afronden</button></div>
+
+<div class="card">
+
+<div class="eyebrow" id="workoutEyebrow">
+VANDAAG
+</div>
+
+<h2 id="workoutTitle">
+Persoonlijke training
+</h2>
+
+<p class="muted" id="workoutDescription">
+Je training wordt hier weergegeven.
+</p>
+
+<div class="exerciseList" id="exerciseList">
+</div>
+
+<div class="rpeContainer">
+
+<div class="rpeTop">
+
+<span>
+Hoe zwaar voelde de training?
+</span>
+
+<strong>
+<span id="rpeValue">7</span>/10
+</strong>
+
+</div>
+
+<input
+id="rpeSlider"
+type="range"
+min="1"
+max="10"
+value="7"
+oninput="document.getElementById('rpeValue').textContent=this.value"
+>
+
+</div>
+
+<button
+class="button dark full"
+onclick="finishWorkout()">
+Training afronden
+</button>
+
+</div>
+
 </section>
+
+
+<!-- SCHEMAS -->
+
+<section id="schemas" class="screen">
+
+<div class="card">
+
+<div class="eyebrow">
+TRAININGSSCHEMA'S
+</div>
+
+<h2>
+Kies hoe je wilt trainen.
+</h2>
+
+<p class="muted">
+Je kunt op elk moment van trainingsstijl veranderen.
+</p>
+
+<div class="planOptions">
+
+<div class="planOption selected" data-plan="adaptive" onclick="selectPlan('adaptive')">
+<h3>Adaptive Coach</h3>
+<p>
+Het schema verandert mee met je beschikbaarheid,
+herstel en prestaties.
+</p>
+</div>
+
+<div class="planOption" data-plan="strength" onclick="selectPlan('strength')">
+<h3>Strength</h3>
+<p>
+Focus op kracht, progressieve overload en compound
+oefeningen.
+</p>
+</div>
+
+<div class="planOption" data-plan="hypertrophy" onclick="selectPlan('hypertrophy')">
+<h3>Hypertrophy</h3>
+<p>
+Meer trainingsvolume en focus op spiergroei.
+</p>
+</div>
+
+<div class="planOption" data-plan="running" onclick="selectPlan('running')">
+<h3>Running</h3>
+<p>
+Opbouw richting betere conditie en langere afstanden.
+</p>
+</div>
+
+<div class="planOption" data-plan="hyrox" onclick="selectPlan('hyrox')">
+<h3>HYROX</h3>
+<p>
+Combinatie van hardlopen, kracht en conditioning.
+</p>
+</div>
+
+<div class="planOption" data-plan="fitness" onclick="selectPlan('fitness')">
+<h3>General Fitness</h3>
+<p>
+Een gebalanceerde combinatie van kracht, conditie en
+mobiliteit.
+</p>
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- COACH -->
 
 <section id="coach" class="screen">
-<div class="card"><div class="eyebrow">PERSOONLIJKE COACH</div><h2>Wat is er veranderd?</h2><p class="muted">Vertel wat er vandaag anders is. De demo-coach gebruikt je bericht om een praktische aanpassing voor te stellen.</p><div class="chat" id="chat"><div class="message coachMessage">Je ligt op schema. Wat is er vandaag veranderd?</div><div class="message coachMessage">Bijvoorbeeld: “Ik heb maar 25 minuten”, “ik ben moe” of “ik kan donderdag niet”.</div></div><div class="chatInput"><input id="chatMessage" placeholder="Vertel je coach wat er verandert..." onkeydown="if(event.key==='Enter')sendMessage()"><button class="button dark" onclick="sendMessage()">Stuur</button></div><div class="notice">Dit is een front-end demo. Er is nog geen echte AI-API gekoppeld. Voor een productieversie kun je hier een veilige backend + AI-model achter zetten.</div></div>
+
+<div class="card">
+
+<div class="eyebrow">
+PERSOONLIJKE COACH
+</div>
+
+<h2>
+Wat is er veranderd?
+</h2>
+
+<p class="muted">
+Vertel wat er vandaag anders is. De coach helpt je plan
+aan te passen.
+</p>
+
+<div class="chat" id="chat">
+
+<div class="message coachMessage">
+Je plan is gebaseerd op je doel, beschikbare dagen en
+trainingsduur. Wat is er vandaag veranderd?
+</div>
+
+</div>
+
+<div class="chatInput">
+
+<input
+id="chatMessage"
+placeholder="Bijvoorbeeld: ik heb maar 25 minuten..."
+onkeydown="if(event.key==='Enter') sendMessage()"
+>
+
+<button
+class="button dark"
+onclick="sendMessage()">
+Stuur
+</button>
+
+</div>
+
+</div>
+
 </section>
+
+
+<!-- PROFILE -->
 
 <section id="profile" class="screen">
-<div class="card"><div class="eyebrow">PROFIEL</div><h2>Maak je coach persoonlijk.</h2>
+
+<div class="card">
+
+<div class="eyebrow">
+PROFIEL
+</div>
+
+<h2>
+Jouw gegevens
+</h2>
+
 <div class="formGrid">
-<div class="field"><label>Geslacht</label><select id="profileGender"><option>Man</option><option>Vrouw</option><option>Anders</option><option>Zeg ik liever niet</option></select></div>
-<div class="field"><label>Leeftijd</label><input id="profileAge" type="number" min="13" max="100"></div>
-<div class="field"><label>Doel</label><select id="profileGoal"><option>Sterker worden</option><option>Spiermassa</option><option>Afvallen</option><option>10K hardlopen</option><option>Halve marathon</option><option>HYROX</option><option>Algemeen fit</option></select></div>
-<div class="field"><label>Trainingen per week</label><select id="profileFrequency"><option value="2">2×</option><option value="3">3×</option><option value="4">4×</option><option value="5">5×</option><option value="6">6×</option></select></div>
-<div class="field"><label>Maximale sessieduur</label><select id="profileDuration"><option value="20">20 min</option><option value="30">30 min</option><option value="45">45 min</option><option value="60">60 min</option><option value="90">90 min</option></select></div>
-<div class="field"><label>Schema</label><select id="profileSchema"></select></div>
+
+<div class="field">
+
+<label>
+Naam
+</label>
+
+<input id="profileName" value="Alex">
+
 </div>
-<button class="button dark full" style="margin-top:20px" onclick="saveProfile()">Profiel opslaan & schema aanpassen</button>
+
+<div class="field">
+
+<label>
+Leeftijd
+</label>
+
+<input id="profileAge" type="number">
+
 </div>
+
+</div>
+
+<div class="field" style="margin-top:20px">
+
+<label>
+Geslacht
+</label>
+
+<select id="profileGender">
+
+<option>Man</option>
+<option>Vrouw</option>
+<option>Anders</option>
+<option>Liever niet zeggen</option>
+
+</select>
+
+</div>
+
+<div class="field" style="margin-top:20px">
+
+<label>
+Hoofddoel
+</label>
+
+<select id="profileGoal">
+
+<option>Spiermassa</option>
+<option>Sterker worden</option>
+<option>Afvallen</option>
+<option>10K hardlopen</option>
+<option>HYROX</option>
+<option>Algemeen fit</option>
+
+</select>
+
+</div>
+
+<div class="field" style="margin-top:20px">
+
+<label>
+Trainingen per week
+</label>
+
+<select id="profileFrequency">
+
+<option value="2">2</option>
+<option value="3">3</option>
+<option value="4">4</option>
+<option value="5">5</option>
+<option value="6">6</option>
+
+</select>
+
+</div>
+
+<div class="field" style="margin-top:20px">
+
+<label>
+Maximale sessieduur
+</label>
+
+<select id="profileDuration">
+
+<option value="30">30 minuten</option>
+<option value="45">45 minuten</option>
+<option value="60">60 minuten</option>
+<option value="75">75 minuten</option>
+<option value="90">90 minuten</option>
+
+</select>
+
+</div>
+
+<button
+class="button dark full"
+style="margin-top:22px"
+onclick="saveProfile()">
+Gegevens opslaan en schema vernieuwen
+</button>
+
+</div>
+
 </section>
-</main></div></div>
+
+</main>
+
+</div>
+
+</div>
+
+
 <div class="toast" id="toast"></div>
 
+
 <script>
-const state={
-  gender:"",age:"",goal:"",frequency:3,duration:45,schema:"Full body",sessions:0,totalMinutes:0,rpes:[]
+
+/* ==================================================
+   DATA
+================================================== */
+
+const user = {
+  gender:"",
+  age:"",
+  goal:"",
+  frequency:3,
+  duration:45,
+  days:[],
+  plan:"adaptive",
+  name:"Alex"
 };
-const schemaData=[
- {name:"Full body",desc:"Elke training het hele lichaam. Efficiënt en geschikt voor 2–4 dagen.",goals:["Sterker worden","Spiermassa","Algemeen fit","Afvallen"]},
- {name:"Upper / Lower",desc:"Bovenlichaam en onderlichaam afwisselen. Sterke basis voor 4 dagen.",goals:["Sterker worden","Spiermassa","Algemeen fit"]},
- {name:"Push / Pull / Legs",desc:"Drie duidelijke trainingsblokken voor meer volume en structuur.",goals:["Spiermassa","Sterker worden"]},
- {name:"Strength",desc:"Laag tot gemiddeld volume met focus op progressieve kracht.",goals:["Sterker worden"]},
- {name:"Hypertrophy",desc:"Meer trainingsvolume met focus op spiergroei.",goals:["Spiermassa"]},
- {name:"Running 10K",desc:"Opbouw met rustige kilometers, tempo en herstel.",goals:["10K hardlopen"]},
- {name:"Half Marathon",desc:"Geleidelijke duur- en tempobelasting richting 21,1 km.",goals:["Halve marathon"]},
- {name:"HYROX",desc:"Combinatie van hardlopen, kracht en conditionele blokken.",goals:["HYROX"]},
- {name:"Hybrid fitness",desc:"Kracht en conditie gecombineerd voor een brede basis.",goals:["Algemeen fit","Afvallen","HYROX"]}
-];
 
-let setupStep=1;
-function toast(msg){const e=document.getElementById("toast");e.textContent=msg;e.style.display="block";clearTimeout(window.tt);window.tt=setTimeout(()=>e.style.display="none",2800)}
-function openScreen(id){
- document.querySelectorAll(".screen").forEach(s=>s.classList.toggle("active",s.id===id));
- document.querySelectorAll(".navButton").forEach(b=>b.classList.toggle("active",b.dataset.screen===id));
- window.scrollTo({top:0,behavior:"smooth"});
-}
-document.querySelectorAll(".navButton").forEach(b=>b.addEventListener("click",()=>openScreen(b.dataset.screen)));
+let currentStep = 1;
+let completedWorkouts = 0;
+let totalMinutes = 0;
+let rpeHistory = [];
+let todayWorkout = null;
 
-function choose(group,value){
- document.querySelectorAll(`[data-single="${group}"] .choice`).forEach(b=>b.classList.remove("selected"));
- const btn=document.querySelector(`[data-single="${group}"] .choice[data-value="${CSS.escape(value)}"]`);
- if(btn)btn.classList.add("selected");
- state[group]=value;
+
+/* ==================================================
+   STEP NAVIGATION
+================================================== */
+
+function nextStep(number){
+
+  if(number === 2 && currentStep === 1){
+
+    if(!user.gender){
+      showToast("Kies eerst je geslacht.");
+      return;
+    }
+
+  }
+
+  if(number === 3){
+
+    const age =
+      document.getElementById("ageInput").value;
+
+    if(!age || age < 13 || age > 100){
+      showToast("Vul een geldige leeftijd in.");
+      return;
+    }
+
+    user.age = age;
+
+  }
+
+  if(number === 4){
+
+    if(!user.goal){
+      showToast("Kies eerst je doel.");
+      return;
+    }
+
+  }
+
+  if(number === 5){
+
+    if(!user.frequency){
+      showToast("Kies hoeveel keer je wilt trainen.");
+      return;
+    }
+
+    user.duration =
+      Number(
+        document.getElementById("durationInput").value
+      );
+
+  }
+
+  document
+    .querySelectorAll(".step")
+    .forEach(step => step.classList.remove("active"));
+
+  document
+    .getElementById("step" + number)
+    .classList.add("active");
+
+  for(let i=1;i<=5;i++){
+
+    document
+      .getElementById("dot"+i)
+      .classList.toggle("active",i<=number);
+
+  }
+
+  currentStep = number;
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
 }
-document.querySelectorAll(".choices[data-single]").forEach(group=>{
- group.querySelectorAll(".choice").forEach(b=>b.addEventListener("click",()=>choose(group.dataset.single,b.dataset.value)));
+
+
+/* ==================================================
+   CHOICE BUTTONS
+================================================== */
+
+document
+.querySelectorAll(".genderChoice")
+.forEach(button => {
+
+  button.addEventListener("click",function(){
+
+    document
+      .querySelectorAll(".genderChoice")
+      .forEach(b => b.classList.remove("selected"));
+
+    this.classList.add("selected");
+
+    user.gender = this.dataset.value;
+
+  });
+
 });
 
-function renderSchemaChoices(){
- const container=document.getElementById("schemaChoices");container.innerHTML="";
- const relevant=schemaData.filter(s=>!state.goal||s.goals.includes(state.goal));
- const list=relevant.length?relevant:schemaData;
- list.forEach(s=>{
-  const b=document.createElement("button");b.className="schema"+(state.schema===s.name?" selected":"");
-  b.innerHTML=`<strong>${s.name}</strong><span>${s.desc}</span>`;
-  b.onclick=()=>{state.schema=s.name;renderSchemaChoices()};
-  container.appendChild(b);
- });
-}
-function updateSetupUI(){
- document.querySelectorAll(".step").forEach(s=>s.classList.toggle("active",s.id==="step"+setupStep));
- for(let i=1;i<=5;i++)document.getElementById("p"+i).classList.toggle("active",i<=setupStep);
- document.getElementById("backSetup").style.visibility=setupStep===1?"hidden":"visible";
- document.getElementById("nextSetup").textContent=setupStep===5?"Maak mijn plan":"Volgende";
- if(setupStep===5)renderSchemaChoices();
-}
-function nextSetup(){
- if(setupStep===1&&!state.gender)return toast("Kies eerst een optie.");
- if(setupStep===2){const a=Number(document.getElementById("setupAge").value);if(!a||a<13||a>100)return toast("Vul een geldige leeftijd in.");state.age=a}
- if(setupStep===3&&!state.goal)return toast("Kies eerst je doel.");
- if(setupStep===4&&!state.frequency)return toast("Kies hoeveel keer je wilt trainen.");
- if(setupStep===5){if(!state.duration)return toast("Kies een sessieduur.");finishSetup();return}
- setupStep++;updateSetupUI();
-}
-function prevSetup(){if(setupStep>1){setupStep--;updateSetupUI()}}
-document.querySelectorAll('[data-single="duration"] .choice').forEach(b=>b.addEventListener("click",()=>choose("duration",b.dataset.value)));
-function finishSetup(){
- state.frequency=Number(state.frequency);state.duration=Number(state.duration);
- if(!state.schema){const rel=schemaData.find(s=>s.goals.includes(state.goal));state.schema=rel?rel.name:"Full body"}
- document.getElementById("onboarding").classList.add("hidden");
- populateProfile();renderApp();toast("Je persoonlijke schema is aangemaakt.");
-}
-function populateProfile(){
- document.getElementById("profileGender").value=state.gender;
- document.getElementById("profileAge").value=state.age;
- document.getElementById("profileGoal").value=state.goal;
- document.getElementById("profileFrequency").value=state.frequency;
- document.getElementById("profileDuration").value=state.duration;
- const sel=document.getElementById("profileSchema");sel.innerHTML=schemaData.map(s=>`<option>${s.name}</option>`).join("");sel.value=state.schema;
-}
-function renderApp(){
- document.getElementById("goalLabel").textContent=state.goal;
- document.getElementById("todayDuration").textContent=state.duration+" min";
- document.getElementById("todayMeta").textContent=state.duration+" min · "+state.schema;
- document.getElementById("todayType").textContent=state.goal.includes("hardlopen")||state.goal==="HYROX"?"Buiten / gym":"Gym";
- document.getElementById("planTitle").textContent=state.schema+" · "+state.frequency+"× per week";
- document.getElementById("planSubtitle").textContent=state.duration+" min per sessie · doel: "+state.goal;
- document.getElementById("goalProgress").textContent=state.sessions?state.sessions+" trainingen":"Start vandaag";
- document.getElementById("goalHint").textContent=state.sessions+" afgeronde trainingen";
- document.getElementById("goalBar").style.width=Math.min(100,18+state.sessions*8)+"%";
- const titleMap={"Running 10K":"10K run","Half Marathon":"Long run","HYROX":"Hybrid conditioning"};
- const title=titleMap[state.schema]||state.schema;
- document.getElementById("todayTitle").textContent=title;
- document.getElementById("workoutTitle").textContent=title;
- document.getElementById("workoutSubtitle").textContent="Aangepast aan "+state.duration+" minuten, "+state.frequency+" trainingen per week en je doel.";
- renderWeek();renderExercises();renderAlternatives();
- document.getElementById("statSessions").textContent=state.sessions;
- document.getElementById("statTime").textContent=state.totalMinutes+" min";
- document.getElementById("statRpe").textContent=state.rpes.length?(state.rpes.reduce((a,b)=>a+b,0)/state.rpes.length).toFixed(1):"—";
-}
-function renderWeek(){
- const list=document.getElementById("weekList");list.innerHTML="";
- const names=["Maandag","Dinsdag","Woensdag","Donderdag","Vrijdag","Zaterdag","Zondag"];
- const active=Math.min(6,Math.max(2,Number(state.frequency)||3));
- const templates=weekTemplates(state.schema);
- names.forEach((day,i)=>{
-  const train=i<active;
-  const row=document.createElement("div");row.className="day";
-  row.innerHTML=train?`<div><strong>${day} · ${templates[i%templates.length].name}</strong><small>${state.duration} min · ${templates[i%templates.length].focus}</small></div><span class="${i===0?'badge':'pill'}">${i===0?"Vandaag":"Gepland"}</span>`:`<div><strong>${day} · Herstel</strong><small>Rust of lichte beweging</small></div><span class="pill">Rust</span>`;
-  list.appendChild(row);
- });
-}
-function weekTemplates(schema){
- const map={
-  "Full body":[{name:"Full body A",focus:"Kracht"},{name:"Full body B",focus:"Volume"},{name:"Full body C",focus:"Techniek"}],
-  "Upper / Lower":[{name:"Upper",focus:"Bovenlichaam"},{name:"Lower",focus:"Onderlichaam"}],
-  "Push / Pull / Legs":[{name:"Push",focus:"Borst · schouders · triceps"},{name:"Pull",focus:"Rug · biceps"},{name:"Legs",focus:"Benen"}],
-  "Strength":[{name:"Strength A",focus:"Zware compounds"},{name:"Strength B",focus:"Techniek + volume"}],
-  "Hypertrophy":[{name:"Upper volume",focus:"Spiergroei"},{name:"Lower volume",focus:"Spiergroei"},{name:"Full body volume",focus:"Volume"}],
-  "Running 10K":[{name:"Easy run",focus:"Rustige kilometers"},{name:"Tempo",focus:"Tempo"},{name:"Long run",focus:"Duur"}],
-  "Half Marathon":[{name:"Easy run",focus:"Herstel"},{name:"Tempo",focus:"Drempel"},{name:"Long run",focus:"Duur"}],
-  "HYROX":[{name:"Strength",focus:"Kracht"},{name:"Intervals",focus:"Conditioning"},{name:"HYROX mix",focus:"Combinatie"}],
-  "Hybrid fitness":[{name:"Strength",focus:"Kracht"},{name:"Conditioning",focus:"Conditie"},{name:"Hybrid",focus:"Combinatie"}]
- };
- return map[schema]||map["Full body"];
-}
-function renderExercises(){
- const list=document.getElementById("exerciseList");list.innerHTML="";
- let exercises;
- if(state.schema.includes("Run")) exercises=[["Easy run","25 min · rustig tempo"],["Strides","4 × 20 sec · ontspannen"],["Mobility","5 min · herstel"]];
- else if(state.schema==="Half Marathon") exercises=[["Easy run","20 min · rustig"],["Tempo","3 × 4 min · stevig"],["Mobility","5 min · herstel"]];
- else if(state.schema==="HYROX") exercises=[["Run","800 m · gecontroleerd"],["Sled / squat","3 × 8 · technisch"],["Row","3 × 500 m · stevig"],["Farmer carry","3 × 30 m · stabiel"]];
- else if(state.schema==="Push / Pull / Legs") exercises=[["Bench press","4 × 6 · RPE 7–8"],["Shoulder press","3 × 8 · RPE 7"],["Incline press","3 × 10 · gecontroleerd"],["Triceps","3 × 12 · gecontroleerd"]];
- else if(state.schema==="Upper / Lower") exercises=[["Squat","4 × 6 · RPE 7"],["Bench press","4 × 6 · RPE 7–8"],["Row","3 × 8 · gecontroleerd"],["Romanian deadlift","3 × 8 · RPE 7"]];
- else if(state.schema==="Strength") exercises=[["Squat","4 × 5 · RPE 7–8"],["Bench press","4 × 5 · RPE 7–8"],["Deadlift","3 × 4 · RPE 7"],["Pull-up","3 × 6–8"]];
- else if(state.schema==="Hypertrophy") exercises=[["Leg press","3 × 10 · RPE 8"],["Bench press","3 × 8 · RPE 8"],["Lat pulldown","3 × 10 · RPE 8"],["Lateral raise","3 × 12 · gecontroleerd"]];
- else exercises=[["Squat","3 × 6–8 · RPE 7"],["Bench press","3 × 6–8 · RPE 7–8"],["Row","3 × 8 · gecontroleerd"],["Romanian deadlift","3 × 8 · RPE 7"]];
- exercises.forEach((x,i)=>{
-  const row=document.createElement("div");row.className="exercise";
-  row.innerHTML=`<div><b>${i+1}. ${x[0]}</b><small>${x[1]}</small></div><button class="check" onclick="completeExercise(this)">✓</button>`;
-  list.appendChild(row);
- });
-}
-function completeExercise(btn){btn.classList.toggle("done");if(btn.classList.contains("done"))toast("Oefening voltooid.")}
-function finishWorkout(){
- const r=Number(document.getElementById("rpe").value);state.sessions++;state.totalMinutes+=Number(state.duration);state.rpes.push(r);renderApp();toast("Training opgeslagen · RPE "+r+"/10.");
-}
-function renderAlternatives(){
- const c=document.getElementById("alternativeSchemas");c.innerHTML="";
- schemaData.filter(s=>s.name!==state.schema).slice(0,6).forEach(s=>{
-  const b=document.createElement("button");b.className="schema";b.innerHTML=`<strong>${s.name}</strong><span>${s.desc}</span>`;
-  b.onclick=()=>{state.schema=s.name;document.getElementById("profileSchema").value=s.name;renderApp();toast("Schema gewijzigd naar "+s.name+".")};
-  c.appendChild(b);
- });
-}
-function saveProfile(){
- state.gender=document.getElementById("profileGender").value;
- state.age=Number(document.getElementById("profileAge").value);
- state.goal=document.getElementById("profileGoal").value;
- state.frequency=Number(document.getElementById("profileFrequency").value);
- state.duration=Number(document.getElementById("profileDuration").value);
- state.schema=document.getElementById("profileSchema").value;
- if(!state.age||state.age<13||state.age>100)return toast("Vul een geldige leeftijd in.");
- renderApp();toast("Profiel opgeslagen en schema aangepast.");
-}
-function sendMessage(){
- const input=document.getElementById("chatMessage"),text=input.value.trim();if(!text)return;
- addMessage(text,"userMessage");input.value="";
- const lower=text.toLowerCase();let response="Ik zou je plan aanpassen zonder je belangrijkste trainingsprikkel kwijt te raken.";
- if(/20|25|30|minuut/.test(lower))response="Je hebt minder tijd. Behoud de 2–3 belangrijkste oefeningen en verkort accessoires. Zo blijft de kern van je training behouden.";
- else if(/moe|vermoeid|slaap/.test(lower))response="Verlaag vandaag de belasting. Houd techniek en belangrijke bewegingen, maar verminder sets of intensiteit. Herstel gaat voor.";
- else if(/donderdag|vrijdag|morgen|weekend/.test(lower))response="Verplaats de sessie naar een beschikbare dag en probeer gemiste volume niet dubbel in te halen.";
- else if(/zwaarder|makkelijk/.test(lower))response="Als je meerdere sessies ruim onder je doel-RPE zit, kun je de belasting geleidelijk verhogen. Verhoog liever één variabele tegelijk.";
- else if(/knie|schouder|rug|pijn/.test(lower))response="Stop met een oefening die pijn veroorzaakt. Kies alleen een pijnvrije variant; bij aanhoudende of ernstige pijn is professionele beoordeling verstandig.";
- setTimeout(()=>addMessage(response,"coachMessage"),300);
-}
-function addMessage(text,cls){const m=document.createElement("div");m.className="message "+cls;m.textContent=text;const c=document.getElementById("chat");c.appendChild(m);c.scrollTop=c.scrollHeight}
 
-document.getElementById("profileGoal").addEventListener("change",()=>{state.goal=document.getElementById("profileGoal").value});
-document.getElementById("profileSchema").innerHTML=schemaData.map(s=>`<option>${s.name}</option>`).join("");
-updateSetupUI();
+document
+.querySelectorAll(".goalChoice")
+.forEach(button => {
+
+  button.addEventListener("click",function(){
+
+    document
+      .querySelectorAll(".goalChoice")
+      .forEach(b => b.classList.remove("selected"));
+
+    this.classList.add("selected");
+
+    user.goal = this.dataset.value;
+
+  });
+
+});
+
+
+document
+.querySelectorAll(".frequencyChoice")
+.forEach(button => {
+
+  button.addEventListener("click",function(){
+
+    document
+      .querySelectorAll(".frequencyChoice")
+      .forEach(b => b.classList.remove("selected"));
+
+    this.classList.add("selected");
+
+    user.frequency =
+      Number(this.dataset.value);
+
+  });
+
+});
+
+
+document
+.querySelectorAll(".dayChoice")
+.forEach(button => {
+
+  button.addEventListener("click",function(){
+
+    this.classList.toggle("selected");
+
+    user.days =
+      [...document.querySelectorAll(".dayChoice.selected")]
+      .map(button => button.dataset.value);
+
+  });
+
+});
+
+
+/* ==================================================
+   CREATE PLAN
+================================================== */
+
+function createPlan(){
+
+  user.duration =
+    Number(
+      document.getElementById("durationInput").value
+    );
+
+  if(user.days.length < user.frequency){
+
+    showToast(
+      "Selecteer minstens " +
+      user.frequency +
+      " beschikbare dagen."
+    );
+
+    return;
+
+  }
+
+  user.days =
+    user.days.slice(0,user.frequency);
+
+  document
+    .getElementById("onboarding")
+    .classList.add("hidden");
+
+  document
+    .getElementById("app")
+    .classList.remove("hidden");
+
+  generatePlan();
+
+  showToast(
+    "Je persoonlijke trainingsschema is gemaakt."
+  );
+
+}
+
+
+/* ==================================================
+   PLAN GENERATOR
+================================================== */
+
+function generatePlan(){
+
+  const workouts =
+    createWorkoutTypes();
+
+  const selectedDays =
+    user.days;
+
+  const weekContainer =
+    document.getElementById("weekContainer");
+
+  weekContainer.innerHTML = "";
+
+  for(let i=0;i<selectedDays.length;i++){
+
+    const workout =
+      workouts[i % workouts.length];
+
+    const day =
+      document.createElement("div");
+
+    day.className = "day";
+
+    day.innerHTML = `
+      <div>
+        <strong>${selectedDays[i]} · ${workout.name}</strong>
+        <small>${user.duration} min · ${workout.focus}</small>
+      </div>
+      <span class="badge">
+        ${i === 0 ? "Vandaag" : "Gepland"}
+      </span>
+    `;
+
+    weekContainer.appendChild(day);
+
+  }
+
+  todayWorkout =
+    workouts[0];
+
+  updateDashboard();
+  updateWorkout();
+}
+
+
+/* ==================================================
+   WORKOUT TYPES
+================================================== */
+
+function createWorkoutTypes(){
+
+  let workouts = [];
+
+  if(user.plan === "running" || user.goal === "10K hardlopen"){
+
+    workouts = [
+
+      {
+        name:"Easy Run",
+        focus:"Rustige duurloop",
+        description:"Een rustige loop om conditie en aerobe capaciteit op te bouwen.",
+        exercises:[
+          ["Easy run","25–35 min","Praattempo"],
+          ["Strides","4 × 20 sec","Techniek en versnelling"],
+          ["Mobility","5 min","Heupen en enkels"]
+        ]
+      },
+
+      {
+        name:"Intervals",
+        focus:"Snelheid",
+        description:"Korte intervallen met voldoende herstel tussen de herhalingen.",
+        exercises:[
+          ["Warming-up","8 min","Rustig lopen"],
+          ["Intervals","5 × 3 min","RPE 7–8"],
+          ["Cooling-down","8 min","Rustig lopen"]
+        ]
+      },
+
+      {
+        name:"Long Run",
+        focus:"Uithoudingsvermogen",
+        description:"Een langere rustige sessie om je basisconditie te ontwikkelen.",
+        exercises:[
+          ["Long run","35–60 min","RPE 5–6"],
+          ["Walking recovery","5 min","Rustig uitlopen"]
+        ]
+      }
+
+    ];
+
+  }
+
+  else if(user.plan === "hypertrophy" || user.goal === "Spiermassa"){
+
+    workouts = [
+
+      {
+        name:"Upper Body",
+        focus:"Spiergroei bovenlichaam",
+        description:"Volume voor borst, rug, schouders en armen.",
+        exercises:[
+          ["Bench press","4 × 8","RPE 7–8"],
+          ["Lat pulldown","3 × 10","RPE 8"],
+          ["Shoulder press","3 × 10","RPE 8"],
+          ["Cable row","3 × 10","RPE 8"],
+          ["Biceps curl","2 × 12","RPE 8"]
+        ]
+      },
+
+      {
+        name:"Lower Body",
+        focus:"Spiergroei onderlichaam",
+        description:"Focus op benen en posterior chain.",
+        exercises:[
+          ["Squat","4 × 8","RPE 7–8"],
+          ["Romanian deadlift","3 × 10","RPE 8"],
+          ["Leg press","3 × 12","RPE 8"],
+          ["Leg curl","3 × 12","RPE 8"],
+          ["Calf raise","3 × 15","RPE 8"]
+        ]
+      },
+
+      {
+        name:"Full Body",
+        focus:"Full body volume",
+        description:"Een efficiënte sessie waarbij alle grote spiergroepen worden getraind.",
+        exercises:[
+          ["Goblet squat","3 × 10","RPE 7"],
+          ["Dumbbell bench","3 × 10","RPE 8"],
+          ["Row","3 × 10","RPE 8"],
+          ["Hip thrust","3 × 10","RPE 8"],
+          ["Lateral raise","2 × 15","RPE 8"]
+        ]
+      }
+
+    ];
+
+  }
+
+  else if(user.plan === "hyrox" || user.goal === "HYROX"){
+
+    workouts = [
+
+      {
+        name:"Strength + Engine",
+        focus:"Kracht & conditie",
+        description:"Combinatie van kracht en cardiovasculaire belasting.",
+        exercises:[
+          ["Goblet squat","4 × 10","RPE 7"],
+          ["Burpee","3 × 10","Controle"],
+          ["Row","800 m","Stevig tempo"],
+          ["Walking lunge","3 × 12","Per been"],
+          ["Farmer carry","4 × 30 m","Zwaar"]
+        ]
+      },
+
+      {
+        name:"Running Intervals",
+        focus:"Loopvermogen",
+        description:"Intervaltraining gericht op het verbeteren van je race pace.",
+        exercises:[
+          ["Warming-up","8 min","Rustig"],
+          ["Run interval","6 × 2 min","RPE 8"],
+          ["Recovery","90 sec","Rustig"],
+          ["Cooling-down","5 min","Rustig"]
+        ]
+      },
+
+      {
+        name:"HYROX Circuit",
+        focus:"Conditioning",
+        description:"Circuit met meerdere HYROX-bewegingen.",
+        exercises:[
+          ["Run","1 km","Stevig"],
+          ["Sled / squat","3 sets","Techniek"],
+          ["Burpees","10 reps","Controle"],
+          ["Row","500 m","Stevig"],
+          ["Farmer carry","50 m","Zwaar"]
+        ]
+      }
+
+    ];
+
+  }
+
+  else if(user.plan === "strength" || user.goal === "Sterker worden"){
+
+    workouts = [
+
+      {
+        name:"Full Body Strength",
+        focus:"Kracht",
+        description:"Focus op zware compound bewegingen met voldoende herstel.",
+        exercises:[
+          ["Squat","4 × 5","RPE 7–8"],
+          ["Bench press","4 × 5","RPE 7–8"],
+          ["Barbell row","3 × 6","RPE 7"],
+          ["Romanian deadlift","3 × 6","RPE 7"]
+        ]
+      },
+
+      {
+        name:"Upper Strength",
+        focus:"Bovenlichaam",
+        description:"Zware duw- en trekbewegingen voor krachtontwikkeling.",
+        exercises:[
+          ["Bench press","5 × 4","RPE 8"],
+          ["Pull-up","4 × 5","RPE 8"],
+          ["Overhead press","4 × 5","RPE 7"],
+          ["Row","3 × 6","RPE 7"]
+        ]
+      },
+
+      {
+        name:"Lower Strength",
+        focus:"Onderlichaam",
+        description:"Krachttraining voor benen en heupen.",
+        exercises:[
+          ["Squat","5 × 4","RPE 8"],
+          ["Deadlift","3 × 4","RPE 7–8"],
+          ["Split squat","3 × 8","RPE 7"],
+          ["Calf raise","3 × 12","RPE 7"]
+        ]
+      }
+
+    ];
+
+  }
+
+  else{
+
+    workouts = [
+
+      {
+        name:"Full Body A",
+        focus:"Kracht",
+        description:"Gebalanceerde full-body training met focus op techniek.",
+        exercises:[
+          ["Squat","3 × 8","RPE 7"],
+          ["Bench press","3 × 8","RPE 7"],
+          ["Row","3 × 10","RPE 7"],
+          ["Romanian deadlift","3 × 8","RPE 7"]
+        ]
+      },
+
+      {
+        name:"Full Body B",
+        focus:"Kracht & conditie",
+        description:"Een complete training met kracht en een korte conditioning-prikkel.",
+        exercises:[
+          ["Deadlift","3 × 6","RPE 7"],
+          ["Shoulder press","3 × 8","RPE 7"],
+          ["Lat pulldown","3 × 10","RPE 7"],
+          ["Bike / run","10 min","RPE 6"]
+        ]
+      },
+
+      {
+        name:"Conditioning",
+        focus:"Conditie",
+        description:"Verbeter je algemene conditie zonder je herstel te zwaar te belasten.",
+        exercises:[
+          ["Warm-up","5 min","Rustig"],
+          ["Intervals","6 × 2 min","RPE 7"],
+          ["Recovery","90 sec","Rustig"],
+          ["Mobility","5 min","Herstel"]
+        ]
+      }
+
+    ];
+
+  }
+
+  return workouts;
+
+}
+
+
+/* ==================================================
+   DASHBOARD
+================================================== */
+
+function updateDashboard(){
+
+  document.getElementById("heroText").textContent =
+    `${user.goal} · ${user.frequency} trainingen per week · ${user.duration} min per sessie.`;
+
+  document.getElementById("goalText").textContent =
+    user.goal;
+
+  document.getElementById("todayMeta").textContent =
+    `${user.days[0]} · ${user.duration} min`;
+
+  document.getElementById("todayTitle").textContent =
+    todayWorkout.name;
+
+  document.getElementById("todayDuration").textContent =
+    `${user.duration} min`;
+
+  document.getElementById("todayGoal").textContent =
+    user.goal;
+
+  document.getElementById("todayDescription").textContent =
+    todayWorkout.description;
+
+  document.getElementById("workoutEyebrow").textContent =
+    `${user.days[0]} · ${user.duration} MIN`;
+
+  document.getElementById("planDescription").textContent =
+    `${user.frequency} trainingen per week gericht op ${user.goal}.`;
+
+  document.getElementById("statWorkouts").textContent =
+    completedWorkouts;
+
+  document.getElementById("statMinutes").textContent =
+    totalMinutes;
+
+  const progress =
+    Math.min(
+      100,
+      Math.round(
+        (completedWorkouts / user.frequency) * 100
+      )
+    );
+
+  document.getElementById("goalProgress").style.width =
+    progress + "%";
+
+  document.getElementById("progressText").textContent =
+    `${progress}% van je geplande trainingen deze week.`;
+
+  if(rpeHistory.length){
+
+    const average =
+      rpeHistory.reduce((a,b)=>a+b,0) /
+      rpeHistory.length;
+
+    document.getElementById("statRpe").textContent =
+      average.toFixed(1);
+
+  }
+
+}
+
+
+/* ==================================================
+   WORKOUT SCREEN
+================================================== */
+
+function updateWorkout(){
+
+  if(!todayWorkout) return;
+
+  document.getElementById("workoutTitle").textContent =
+    todayWorkout.name;
+
+  document.getElementById("workoutDescription").textContent =
+    todayWorkout.description;
+
+  const list =
+    document.getElementById("exerciseList");
+
+  list.innerHTML = "";
+
+  todayWorkout.exercises.forEach((exercise,index)=>{
+
+    const item =
+      document.createElement("div");
+
+    item.className = "exercise";
+
+    item.innerHTML = `
+      <div>
+        <b>${index+1}. ${exercise[0]}</b>
+        <small>${exercise[1]} · ${exercise[2]}</small>
+      </div>
+      <button class="check" onclick="completeExercise(this)">
+        ✓
+      </button>
+    `;
+
+    list.appendChild(item);
+
+  });
+
+}
+
+
+/* ==================================================
+   COMPLETE EXERCISE
+================================================== */
+
+function completeExercise(button){
+
+  button.classList.toggle("done");
+
+  if(button.classList.contains("done")){
+
+    showToast("Oefening voltooid.");
+
+  }
+
+}
+
+
+/* ==================================================
+   FINISH WORKOUT
+================================================== */
+
+function finishWorkout(){
+
+  const rpe =
+    Number(
+      document.getElementById("rpeSlider").value
+    );
+
+  const exercises =
+    document.querySelectorAll(".check");
+
+  const completed =
+    document.querySelectorAll(".check.done").length;
+
+  if(completed < exercises.length){
+
+    showToast(
+      "Rond eerst alle oefeningen af."
+    );
+
+    return;
+
+  }
+
+  completedWorkouts++;
+  totalMinutes += Number(user.duration);
+  rpeHistory.push(rpe);
+
+  updateDashboard();
+
+  showToast(
+    `Training opgeslagen. RPE ${rpe}/10.`
+  );
+
+}
+
+
+/* ==================================================
+   SCREEN NAVIGATION
+================================================== */
+
+const navButtons =
+  document.querySelectorAll(".navButton");
+
+const screens =
+  document.querySelectorAll(".screen");
+
+navButtons.forEach(button => {
+
+  button.addEventListener("click",()=>{
+
+    openScreen(
+      button.dataset.screen
+    );
+
+  });
+
+});
+
+
+function openScreen(id){
+
+  screens.forEach(screen => {
+
+    screen.classList.toggle(
+      "active",
+      screen.id === id
+    );
+
+  });
+
+  navButtons.forEach(button => {
+
+    button.classList.toggle(
+      "active",
+      button.dataset.screen === id
+    );
+
+  });
+
+  window.scrollTo({
+    top:0,
+    behavior:"smooth"
+  });
+
+}
+
+
+/* ==================================================
+   PLAN SELECTION
+================================================== */
+
+function selectPlan(plan){
+
+  user.plan = plan;
+
+  document
+    .querySelectorAll(".planOption")
+    .forEach(option => {
+
+      option.classList.toggle(
+        "selected",
+        option.dataset.plan === plan
+      );
+
+    });
+
+  generatePlan();
+
+  showToast(
+    "Nieuw trainingsschema geselecteerd."
+  );
+
+}
+
+
+/* ==================================================
+   AI COACH
+================================================== */
+
+function sendMessage(){
+
+  const input =
+    document.getElementById("chatMessage");
+
+  const text =
+    input.value.trim();
+
+  if(!text) return;
+
+  addMessage(
+    text,
+    "userMessage"
+  );
+
+  const lower =
+    text.toLowerCase();
+
+  let response =
+    "Ik zou je planning aanpassen zonder je hoofddoel uit het oog te verliezen.";
+
+  if(
+    lower.includes("20") ||
+    lower.includes("25") ||
+    lower.includes("30") ||
+    lower.includes("minuut")
+  ){
+
+    response =
+      "Je hebt minder tijd. Houd de belangrijkste oefeningen en verminder vooral accessoires. Ik zou de trainingsprikkel behouden en de sessie inkorten.";
+
+  }
+  else if(
+    lower.includes("moe") ||
+    lower.includes("vermoeid") ||
+    lower.includes("slaap")
+  ){
+
+    response =
+      "Dan zou ik vandaag de belasting verlagen. Houd de belangrijkste bewegingen, maar verminder volume of intensiteit. Herstel is onderdeel van progressie.";
+
+  }
+  else if(
+    lower.includes("morgen") ||
+    lower.includes("donderdag") ||
+    lower.includes("vrijdag") ||
+    lower.includes("kan niet")
+  ){
+
+    response =
+      "Verplaats de training naar een beschikbare dag. Probeer de gemiste sessie niet dubbel in te halen; een consistente week is belangrijker.";
+
+  }
+  else if(
+    lower.includes("pijn") ||
+    lower.includes("knie") ||
+    lower.includes("schouder") ||
+    lower.includes("rug")
+  ){
+
+    response =
+      "Stop met een oefening die pijn veroorzaakt. Kies geen alternatief als de pijn onduidelijk is; bij aanhoudende of ernstige klachten is professionele beoordeling verstandig.";
+
+  }
+  else if(
+    lower.includes("makkelijk") ||
+    lower.includes("zwaarder")
+  ){
+
+    response =
+      "Als je de geplande RPE duidelijk onder de doel-RPE haalt, kun je de volgende sessie geleidelijk verhogen. Verhoog liever één variabele tegelijk.";
+
+  }
+
+  setTimeout(()=>{
+
+    addMessage(
+      response,
+      "coachMessage"
+    );
+
+  },300);
+
+  input.value = "";
+
+}
+
+
+function addMessage(text,className){
+
+  const chat =
+    document.getElementById("chat");
+
+  const message =
+    document.createElement("div");
+
+  message.className =
+    "message " + className;
+
+  message.textContent =
+    text;
+
+  chat.appendChild(message);
+
+  chat.scrollTop =
+    chat.scrollHeight;
+
+}
+
+
+/* ==================================================
+   PROFILE
+================================================== */
+
+function saveProfile(){
+
+  user.name =
+    document.getElementById("profileName").value.trim() || "Alex";
+
+  user.age =
+    document.getElementById("profileAge").value;
+
+  user.gender =
+    document.getElementById("profileGender").value;
+
+  user.goal =
+    document.getElementById("profileGoal").value;
+
+  user.frequency =
+    Number(
+      document.getElementById("profileFrequency").value
+    );
+
+  user.duration =
+    Number(
+      document.getElementById("profileDuration").value
+    );
+
+  /*
+    Als het aantal gewenste trainingen verandert,
+    zorgen we dat er genoeg dagen beschikbaar zijn.
+  */
+
+  const allDays = [
+    "Maandag",
+    "Dinsdag",
+    "Woensdag",
+    "Donderdag",
+    "Vrijdag",
+    "Zaterdag",
+    "Zondag"
+  ];
+
+  user.days =
+    allDays.slice(0,user.frequency);
+
+  generatePlan();
+
+  showToast(
+    "Profiel opgeslagen en schema vernieuwd."
+  );
+
+}
+
+
+/* ==================================================
+   TOAST
+================================================== */
+
+function showToast(message){
+
+  const toast =
+    document.getElementById("toast");
+
+  toast.textContent =
+    message;
+
+  toast.style.display =
+    "block";
+
+  clearTimeout(
+    window.toastTimer
+  );
+
+  window.toastTimer =
+    setTimeout(()=>{
+
+      toast.style.display =
+        "none";
+
+    },3000);
+
+}
+
+
+/* ==================================================
+   INITIAL SETUP
+================================================== */
+
+document.getElementById("profileAge").value =
+  user.age;
+
 </script>
+
 </body>
 </html>
-'''
-path=Path("/mnt/data/index.html")
-path.write_text(html, encoding="utf-8")
-print(f"Klaar: {path}")
