@@ -1,5 +1,4 @@
-index.html
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="nl">
 <head>
 <meta charset="UTF-8">
@@ -21,12 +20,16 @@ index.html
   --bg:#f5f5f0;
   --card:#ffffff;
   --text:#111111;
-  --muted:#73736c;
+  --muted:#777770;
   --border:#e2e2da;
   --soft:#eeeeea;
   --black:#111111;
   --green:#dff2e4;
   --greenText:#18572e;
+  --orange:#fff0d8;
+  --orangeText:#7b4b00;
+  --red:#ffe1df;
+  --redText:#8b211c;
 }
 
 html{
@@ -50,13 +53,15 @@ button{
   cursor:pointer;
 }
 
+button:active{
+  transform:scale(.98);
+}
+
 .app{
   width:min(1180px,calc(100% - 28px));
   margin:auto;
-  padding-bottom:40px;
+  padding-bottom:50px;
 }
-
-/* HEADER */
 
 .header{
   height:76px;
@@ -76,11 +81,19 @@ button{
 }
 
 .headerRight{
+  display:flex;
+  align-items:center;
+  gap:10px;
   font-size:12px;
   color:var(--muted);
 }
 
-/* LAYOUT */
+.statusDot{
+  width:8px;
+  height:8px;
+  border-radius:50%;
+  background:#39a85a;
+}
 
 .layout{
   display:grid;
@@ -121,8 +134,6 @@ button{
   color:#111;
 }
 
-/* SCREENS */
-
 .screen{
   display:none;
 }
@@ -130,8 +141,6 @@ button{
 .screen.active{
   display:block;
 }
-
-/* HERO */
 
 .hero{
   position:relative;
@@ -176,8 +185,6 @@ button{
   line-height:1.55;
 }
 
-/* BUTTONS */
-
 .button{
   border:0;
   border-radius:13px;
@@ -210,8 +217,6 @@ button{
   width:100%;
 }
 
-/* CARDS */
-
 .grid{
   display:grid;
   grid-template-columns:1.3fr .7fr;
@@ -235,8 +240,6 @@ button{
 .muted{
   color:var(--muted);
 }
-
-/* TODAY */
 
 .today{
   border:1px solid var(--border);
@@ -267,7 +270,24 @@ button{
   font-weight:800;
 }
 
-/* PROGRESS */
+.badge{
+  background:var(--green);
+  color:var(--greenText);
+  border-radius:999px;
+  padding:6px 9px;
+  font-size:11px;
+  font-weight:900;
+}
+
+.badge.orange{
+  background:var(--orange);
+  color:var(--orangeText);
+}
+
+.badge.red{
+  background:var(--red);
+  color:var(--redText);
+}
 
 .progress{
   height:9px;
@@ -282,9 +302,8 @@ button{
   width:68%;
   height:100%;
   background:#111;
+  transition:.5s;
 }
-
-/* COACH */
 
 .coach{
   display:flex;
@@ -309,7 +328,30 @@ button{
   line-height:1.5;
 }
 
-/* WEEK */
+.stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-top:18px;
+}
+
+.stat{
+  padding:17px;
+  background:#fafaf7;
+  border:1px solid var(--border);
+  border-radius:15px;
+}
+
+.statNumber{
+  font-size:27px;
+  font-weight:900;
+}
+
+.statLabel{
+  color:var(--muted);
+  font-size:12px;
+  margin-top:3px;
+}
 
 .week{
   display:grid;
@@ -338,17 +380,6 @@ button{
   margin-top:4px;
 }
 
-.badge{
-  background:var(--green);
-  color:var(--greenText);
-  border-radius:999px;
-  padding:6px 9px;
-  font-size:11px;
-  font-weight:900;
-}
-
-/* WORKOUT */
-
 .exerciseList{
   display:grid;
   gap:9px;
@@ -363,6 +394,11 @@ button{
   padding:17px;
   border:1px solid var(--border);
   border-radius:16px;
+  transition:.2s;
+}
+
+.exercise.completed{
+  background:#f7fbf8;
 }
 
 .exercise b{
@@ -376,8 +412,8 @@ button{
 }
 
 .check{
-  width:37px;
-  height:37px;
+  width:39px;
+  height:39px;
   border-radius:50%;
   background:#fff;
   border:1px solid var(--border);
@@ -389,8 +425,6 @@ button{
   background:#111;
   color:#fff;
 }
-
-/* RPE */
 
 .rpeContainer{
   margin:22px 0;
@@ -407,8 +441,6 @@ button{
   width:100%;
   margin-top:12px;
 }
-
-/* CHAT */
 
 .chat{
   min-height:300px;
@@ -460,7 +492,21 @@ button{
   border-color:#999;
 }
 
-/* FORMS */
+.quickPrompts{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:12px;
+}
+
+.quickPrompt{
+  border:1px solid var(--border);
+  background:#fff;
+  border-radius:999px;
+  padding:8px 11px;
+  font-size:12px;
+  font-weight:700;
+}
 
 .formGrid{
   display:grid;
@@ -508,34 +554,62 @@ button{
   border-color:#111;
 }
 
-/* STATS */
-
-.stats{
-  display:grid;
-  grid-template-columns:repeat(3,1fr);
-  gap:10px;
-  margin-top:18px;
+.historyItem{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:16px 0;
+  border-bottom:1px solid var(--border);
 }
 
-.stat{
-  padding:17px;
-  background:#fafaf7;
-  border:1px solid var(--border);
-  border-radius:15px;
+.historyItem:last-child{
+  border-bottom:0;
 }
 
-.statNumber{
-  font-size:27px;
-  font-weight:900;
-}
-
-.statLabel{
+.historyDate{
   color:var(--muted);
   font-size:12px;
-  margin-top:3px;
+  margin-top:4px;
 }
 
-/* TOAST */
+.exerciseLibrary{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:10px;
+  margin-top:16px;
+}
+
+.libraryItem{
+  border:1px solid var(--border);
+  border-radius:16px;
+  padding:16px;
+  background:#fafaf7;
+}
+
+.libraryItem strong{
+  display:block;
+}
+
+.libraryItem small{
+  display:block;
+  color:var(--muted);
+  margin-top:5px;
+}
+
+.search{
+  width:100%;
+  padding:14px;
+  border:1px solid var(--border);
+  border-radius:13px;
+  outline:none;
+}
+
+.empty{
+  padding:35px 15px;
+  text-align:center;
+  color:var(--muted);
+}
 
 .toast{
   position:fixed;
@@ -552,17 +626,43 @@ button{
   box-shadow:0 12px 40px rgba(0,0,0,.2);
 }
 
-/* MOBILE */
+.modal{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,.45);
+  z-index:90;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:20px;
+}
 
-@media(max-width:820px){
+.modal.show{
+  display:flex;
+}
 
-  .app{
-    width:min(100% - 18px,650px);
-  }
+.modalBox{
+  width:min(520px,100%);
+  background:#fff;
+  border-radius:24px;
+  padding:25px;
+  max-height:90vh;
+  overflow:auto;
+}
 
-  .header{
-    height:64px;
-  }
+.modalActions{
+  display:flex;
+  gap:8px;
+  margin-top:20px;
+}
+
+.smallNote{
+  font-size:12px;
+  color:var(--muted);
+  line-height:1.5;
+}
+
+@media(max-width:900px){
 
   .layout{
     grid-template-columns:1fr;
@@ -586,31 +686,32 @@ button{
     grid-template-columns:1fr;
   }
 
-  .hero{
-    padding:28px 23px;
-  }
-
-  .hero h1{
-    letter-spacing:-2px;
-  }
-
-  .formGrid{
-    grid-template-columns:1fr;
-  }
-
   .stats{
-    grid-template-columns:1fr 1fr;
+    grid-template-columns:repeat(2,1fr);
   }
 }
 
-@media(max-width:480px){
+@media(max-width:600px){
+
+  .app{
+    width:min(100% - 18px,650px);
+  }
+
+  .header{
+    height:64px;
+  }
 
   .headerRight{
     display:none;
   }
 
+  .hero{
+    padding:28px 23px;
+  }
+
   .hero h1{
     font-size:42px;
+    letter-spacing:-2px;
   }
 
   .card{
@@ -622,7 +723,11 @@ button{
     padding:18px;
   }
 
-  .stats{
+  .formGrid{
+    grid-template-columns:1fr;
+  }
+
+  .exerciseLibrary{
     grid-template-columns:1fr;
   }
 
@@ -632,6 +737,10 @@ button{
 
   .chatInput .button{
     width:100%;
+  }
+
+  .modalActions{
+    flex-direction:column;
   }
 }
 </style>
@@ -648,53 +757,35 @@ adaptive<span>coach</span>
 </div>
 
 <div class="headerRight">
-Persoonlijke trainingscoach
+<span class="statusDot"></span>
+<span>Persoonlijke trainingscoach</span>
 </div>
 
 </header>
 
 <div class="layout">
 
-<!-- NAVIGATION -->
-
 <nav class="sidebar">
 
-<button class="navButton active" data-screen="dashboard">
-Vandaag
-</button>
-
-<button class="navButton" data-screen="plan">
-Mijn plan
-</button>
-
-<button class="navButton" data-screen="workout">
-Training
-</button>
-
-<button class="navButton" data-screen="coach">
-AI Coach
-</button>
-
-<button class="navButton" data-screen="profile">
-Profiel
-</button>
+<button class="navButton active" data-screen="dashboard">Vandaag</button>
+<button class="navButton" data-screen="plan">Mijn plan</button>
+<button class="navButton" data-screen="workout">Training</button>
+<button class="navButton" data-screen="coach">AI Coach</button>
+<button class="navButton" data-screen="progress">Voortgang</button>
+<button class="navButton" data-screen="library">Oefeningen</button>
+<button class="navButton" data-screen="profile">Profiel</button>
 
 </nav>
 
-
 <main>
 
-<!-- =========================
-     DASHBOARD
-========================= -->
+<!-- DASHBOARD -->
 
 <section id="dashboard" class="screen active">
 
 <div class="hero">
 
-<div class="eyebrow">
-ADAPTIVE COACH
-</div>
+<div class="eyebrow">ADAPTIVE COACH</div>
 
 <h1>
 Je plan past zich aan jou aan.
@@ -706,106 +797,80 @@ Adaptive Coach maakt een plan voor jouw doel en past het
 aan wanneer je planning, herstel of prestaties veranderen.
 </p>
 
-<button
-class="button light"
-onclick="openScreen('workout')">
-
+<button class="button light" onclick="openScreen('workout')">
 Start mijn training
-
 </button>
 
 </div>
-
 
 <div class="grid">
 
 <div class="card">
 
-<h2>
-Vandaag
-</h2>
+<h2>Vandaag</h2>
 
-<p class="muted">
-Dinsdag · 45 min · Kracht
+<p class="muted" id="todaySubtitle">
+Donderdag · 45 min · Kracht
 </p>
 
 <div class="today">
 
-<div class="eyebrow">
-TRAINING A
-</div>
+<div class="eyebrow">TRAINING A</div>
 
-<div class="title">
+<div class="title" id="todayWorkoutName">
 Full body strength
 </div>
 
 <div class="meta">
-
-<span class="pill">
-45 min
-</span>
-
-<span class="pill">
-RPE 7–8
-</span>
-
-<span class="pill">
-Gym
-</span>
-
+<span class="pill" id="todayDuration">45 min</span>
+<span class="pill">RPE 7–8</span>
+<span class="pill">Gym</span>
 </div>
 
-<p class="muted">
+<p class="muted" id="todayDescription">
 Vandaag ligt de nadruk op kracht. Je vorige training
 ging goed, daarom verhogen we één belangrijke oefening
 licht.
 </p>
 
-<button
-class="button dark"
-onclick="openScreen('workout')">
-
+<button class="button dark" onclick="openScreen('workout')">
 Training openen
-
 </button>
 
 </div>
 
 </div>
 
-
 <div class="card">
 
-<h2>
-Jouw doel
-</h2>
+<h2>Jouw doel</h2>
 
-<p class="muted">
-100 kg bench press
+<p class="muted" id="goalText">
+Sterker worden
 </p>
 
-<div style="font-size:40px;font-weight:900;margin-top:12px">
+<div style="font-size:40px;font-weight:900;margin-top:12px" id="goalValue">
 82.5 kg
 </div>
 
 <div class="progress">
-<span></span>
+<span id="goalProgress"></span>
 </div>
 
-<p class="muted">
+<p class="muted" id="goalProgressText">
 68% van je doel
 </p>
 
 <div class="coach">
 
-<div class="avatar">
-A
-</div>
+<div class="avatar">A</div>
 
 <p>
 <b>Coach:</b>
-Je ligt op schema. We verhogen de belasting
-alleen wanneer je prestaties dit toelaten.
+<span id="dashboardCoachText">
+Je ligt op schema. We verhogen de belasting alleen wanneer
+je prestaties dit toelaten.
+</span>
 </p>
 
 </div>
@@ -814,28 +879,30 @@ alleen wanneer je prestaties dit toelaten.
 
 </div>
 
-
 <div class="card">
 
-<h2>
-Deze week
-</h2>
+<h2>Deze week</h2>
 
 <div class="stats">
 
 <div class="stat">
-<div class="statNumber">3</div>
+<div class="statNumber" id="statWorkouts">0</div>
 <div class="statLabel">trainingen</div>
 </div>
 
 <div class="stat">
-<div class="statNumber">2:05</div>
+<div class="statNumber" id="statTime">0:00</div>
 <div class="statLabel">trainingstijd</div>
 </div>
 
 <div class="stat">
-<div class="statNumber">7.2</div>
+<div class="statNumber" id="statRpe">—</div>
 <div class="statLabel">gemiddelde RPE</div>
+</div>
+
+<div class="stat">
+<div class="statNumber" id="statStreak">0</div>
+<div class="statLabel">dagen streak</div>
 </div>
 
 </div>
@@ -845,206 +912,68 @@ Deze week
 </section>
 
 
-<!-- =========================
-     PLAN
-========================= -->
+<!-- PLAN -->
 
 <section id="plan" class="screen">
 
 <div class="card">
 
-<div class="eyebrow">
-JOUW PLAN
-</div>
+<div class="eyebrow">JOUW PLAN</div>
 
-<h2>
-Een plan, geen gevangenis.
-</h2>
+<h2>Een plan, geen gevangenis.</h2>
 
 <p class="muted">
 Je schema is een uitgangspunt. Wanneer je leven verandert,
 kan je trainingsweek mee veranderen.
 </p>
 
-<div class="week">
-
-<div class="day">
-
-<div>
-<strong>Maandag · Upper body</strong>
-<small>45 min · RPE 7 · afgerond</small>
-</div>
-
-<span class="badge">
-Voltooid
-</span>
+<div class="week" id="weekContainer"></div>
 
 </div>
 
+<div class="card">
 
-<div class="day">
+<h2>Plan aanpassen</h2>
 
-<div>
-<strong>Dinsdag · Full body</strong>
-<small>45 min · vandaag</small>
-</div>
+<p class="muted">
+Kun je een dag niet? Laat de coach je week opnieuw verdelen.
+</p>
 
-<span class="badge">
-Vandaag
-</span>
-
-</div>
-
-
-<div class="day">
-
-<div>
-<strong>Woensdag · Rust</strong>
-<small>Actief herstel</small>
-</div>
-
-<span class="pill">
-Rust
-</span>
-
-</div>
-
-
-<div class="day">
-
-<div>
-<strong>Donderdag · Lower body</strong>
-<small>40 min · gepland</small>
-</div>
-
-<button
-class="button outline"
-onclick="reschedule()">
-
-Wijzig
-
+<button class="button dark" onclick="openScreen('coach')">
+Vraag de coach
 </button>
-
-</div>
-
-
-<div class="day">
-
-<div>
-<strong>Zaterdag · Conditioning</strong>
-<small>35 min · gepland</small>
-</div>
-
-<span class="pill">
-Gepland
-</span>
-
-</div>
-
-</div>
 
 </div>
 
 </section>
 
 
-<!-- =========================
-     WORKOUT
-========================= -->
+<!-- WORKOUT -->
 
 <section id="workout" class="screen">
 
 <div class="card">
 
 <div class="eyebrow">
-VANDAAG · 45 MIN
+VANDAAG · <span id="workoutDuration">45</span> MIN
 </div>
 
-<h2>
+<h2 id="workoutTitle">
 Full body strength
 </h2>
 
-<p class="muted">
+<p class="muted" id="workoutFocus">
 Focus: kracht en techniek. Neem voldoende rust tussen
 zware sets.
 </p>
 
-
-<div class="exerciseList">
-
-<div class="exercise">
-
-<div>
-<b>1. Bench press</b>
-<small>4 × 6 · 82.5 kg · RPE 7–8</small>
-</div>
-
-<button
-class="check"
-onclick="completeExercise(this)">
-✓
-</button>
-
-</div>
-
-
-<div class="exercise">
-
-<div>
-<b>2. Romanian deadlift</b>
-<small>3 × 8 · gecontroleerd</small>
-</div>
-
-<button
-class="check"
-onclick="completeExercise(this)">
-✓
-</button>
-
-</div>
-
-
-<div class="exercise">
-
-<div>
-<b>3. Pull-up</b>
-<small>3 × 6–8 · lichaamsgewicht</small>
-</div>
-
-<button
-class="check"
-onclick="completeExercise(this)">
-✓
-</button>
-
-</div>
-
-
-<div class="exercise">
-
-<div>
-<b>4. Shoulder press</b>
-<small>3 × 8 · RPE 7</small>
-</div>
-
-<button
-class="check"
-onclick="completeExercise(this)">
-✓
-</button>
-
-</div>
-
-</div>
-
+<div class="exerciseList" id="exerciseList"></div>
 
 <div class="rpeContainer">
 
 <div class="rpeTop">
 
-<span>
-Hoe zwaar voelde de training?
-</span>
+<span>Hoe zwaar voelde de training?</span>
 
 <strong>
 <span id="rpeValue">7</span>/10
@@ -1058,19 +987,13 @@ type="range"
 min="1"
 max="10"
 value="7"
-oninput="
-document.getElementById('rpeValue').textContent=this.value
-">
+oninput="document.getElementById('rpeValue').textContent=this.value"
+>
 
 </div>
 
-
-<button
-class="button dark full"
-onclick="finishWorkout()">
-
+<button class="button dark full" onclick="finishWorkout()">
 Training afronden
-
 </button>
 
 </div>
@@ -1078,57 +1001,65 @@ Training afronden
 </section>
 
 
-<!-- =========================
-     AI COACH
-========================= -->
+<!-- COACH -->
 
 <section id="coach" class="screen">
 
 <div class="card">
 
-<div class="eyebrow">
-PERSOONLIJKE COACH
-</div>
+<div class="eyebrow">PERSOONLIJKE COACH</div>
 
-<h2>
-Wat is er veranderd?
-</h2>
+<h2>Wat is er veranderd?</h2>
 
 <p class="muted">
 Vertel wat er vandaag anders is. De coach gebruikt die
 informatie om je planning aan te passen.
 </p>
 
-
 <div class="chat" id="chat">
 
 <div class="message coachMessage">
-Je ligt op schema. Wat is er vandaag veranderd?
+Ik ben je Adaptive Coach. Wat is er vandaag veranderd?
 </div>
 
 <div class="message coachMessage">
-Bijvoorbeeld: “Ik heb maar 25 minuten”, “ik ben moe”
-of “ik kan donderdag niet”.
+Ik kan bijvoorbeeld rekening houden met minder tijd,
+vermoeidheid, een gemiste training of een makkelijker
+dan verwachte training.
 </div>
 
 </div>
 
+<div class="quickPrompts">
+
+<button class="quickPrompt" onclick="quickMessage('Ik heb maar 25 minuten')">
+Ik heb maar 25 min
+</button>
+
+<button class="quickPrompt" onclick="quickMessage('Ik ben moe')">
+Ik ben moe
+</button>
+
+<button class="quickPrompt" onclick="quickMessage('Ik heb goed getraind')">
+Training ging goed
+</button>
+
+<button class="quickPrompt" onclick="quickMessage('Ik kan morgen niet')">
+Ik kan morgen niet
+</button>
+
+</div>
 
 <div class="chatInput">
 
 <input
 id="chatMessage"
 placeholder="Vertel je coach wat er verandert..."
-onkeydown="
-if(event.key==='Enter') sendMessage()
-">
+onkeydown="if(event.key==='Enter') sendMessage()"
+>
 
-<button
-class="button dark"
-onclick="sendMessage()">
-
+<button class="button dark" onclick="sendMessage()">
 Stuur
-
 </button>
 
 </div>
@@ -1138,58 +1069,115 @@ Stuur
 </section>
 
 
-<!-- =========================
-     PROFILE
-========================= -->
+<!-- PROGRESS -->
+
+<section id="progress" class="screen">
+
+<div class="card">
+
+<div class="eyebrow">VOORTGANG</div>
+
+<h2>Je bouwt momentum.</h2>
+
+<p class="muted">
+Adaptive Coach kijkt niet alleen naar één training,
+maar naar je ontwikkeling over tijd.
+</p>
+
+<div class="stats">
+
+<div class="stat">
+<div class="statNumber" id="progressTotal">0</div>
+<div class="statLabel">totale trainingen</div>
+</div>
+
+<div class="stat">
+<div class="statNumber" id="progressMinutes">0</div>
+<div class="statLabel">minuten getraind</div>
+</div>
+
+<div class="stat">
+<div class="statNumber" id="progressRpe">—</div>
+<div class="statLabel">gemiddelde RPE</div>
+</div>
+
+<div class="stat">
+<div class="statNumber" id="progressStreak">0</div>
+<div class="statLabel">huidige streak</div>
+</div>
+
+</div>
+
+</div>
+
+<div class="card">
+
+<h2>Trainingshistorie</h2>
+
+<div id="historyList"></div>
+
+</div>
+
+</section>
+
+
+<!-- LIBRARY -->
+
+<section id="library" class="screen">
+
+<div class="card">
+
+<div class="eyebrow">OEFENINGEN</div>
+
+<h2>Oefeningenbibliotheek</h2>
+
+<p class="muted">
+Vind oefeningen die passen bij jouw training.
+</p>
+
+<input
+class="search"
+id="exerciseSearch"
+placeholder="Zoek bijvoorbeeld bench press..."
+oninput="renderLibrary()"
+>
+
+<div class="exerciseLibrary" id="libraryGrid"></div>
+
+</div>
+
+</section>
+
+
+<!-- PROFILE -->
 
 <section id="profile" class="screen">
 
 <div class="card">
 
-<div class="eyebrow">
-PROFIEL
-</div>
+<div class="eyebrow">PROFIEL</div>
 
-<h2>
-Maak je coach persoonlijk.
-</h2>
-
+<h2>Maak je coach persoonlijk.</h2>
 
 <div class="formGrid">
 
 <div class="field">
 
-<label>
-Naam
-</label>
+<label>Naam</label>
 
-<input
-id="name"
-value="Alex"
->
+<input id="name" value="Alex">
 
 </div>
 
-
 <div class="field">
 
-<label>
-Trainingsniveau
-</label>
+<label>Trainingsniveau</label>
 
-<select>
+<select id="level">
 
-<option>
-Beginner
-</option>
-
-<option selected>
-Intermediate
-</option>
-
-<option>
-Advanced
-</option>
+<option>Beginner</option>
+<option selected>Intermediate</option>
+<option>Advanced</option>
 
 </select>
 
@@ -1197,34 +1185,29 @@ Advanced
 
 </div>
 
+<div class="field" style="margin-top:20px">
 
-<div
-class="field"
-style="margin-top:20px">
+<label>Hoofddoel</label>
 
-<label>
-Hoofddoel
-</label>
+<div class="choices" id="goalChoices">
 
-<div class="choices">
-
-<button class="choice selected">
+<button class="choice selected" data-value="Sterker worden">
 Sterker worden
 </button>
 
-<button class="choice">
+<button class="choice" data-value="Spiermassa">
 Spiermassa
 </button>
 
-<button class="choice">
+<button class="choice" data-value="10K">
 10K
 </button>
 
-<button class="choice">
+<button class="choice" data-value="HYROX">
 HYROX
 </button>
 
-<button class="choice">
+<button class="choice" data-value="Algemeen fit">
 Algemeen fit
 </button>
 
@@ -1232,88 +1215,70 @@ Algemeen fit
 
 </div>
 
+<div class="field" style="margin-top:20px">
 
-<div
-class="field"
-style="margin-top:20px">
+<label>Beschikbare dagen</label>
 
-<label>
-Beschikbare dagen
-</label>
+<div class="choices" id="dayChoices">
 
-<div class="choices">
-
-<button class="choice selected">
-Ma
-</button>
-
-<button class="choice">
-Di
-</button>
-
-<button class="choice selected">
-Wo
-</button>
-
-<button class="choice">
-Do
-</button>
-
-<button class="choice selected">
-Vr
-</button>
-
-<button class="choice">
-Za
-</button>
-
-<button class="choice">
-Zo
-</button>
+<button class="choice selected" data-value="Ma">Ma</button>
+<button class="choice" data-value="Di">Di</button>
+<button class="choice selected" data-value="Wo">Wo</button>
+<button class="choice" data-value="Do">Do</button>
+<button class="choice selected" data-value="Vr">Vr</button>
+<button class="choice" data-value="Za">Za</button>
+<button class="choice" data-value="Zo">Zo</button>
 
 </div>
 
 </div>
 
+<div class="formGrid" style="margin-top:20px">
 
-<div
-class="field"
-style="margin-top:20px">
+<div class="field">
 
-<label>
-Maximale trainingstijd</label>
+<label>Maximale trainingstijd</label>
 
-<select>
+<select id="duration">
 
-<option>
-30 minuten
-</option>
-
-<option selected>
-45 minuten
-</option>
-
-<option>
-60 minuten
-</option>
-
-<option>
-90 minuten
-</option>
+<option value="30">30 minuten</option>
+<option value="45" selected>45 minuten</option>
+<option value="60">60 minuten</option>
+<option value="90">90 minuten</option>
 
 </select>
 
 </div>
 
+<div class="field">
+
+<label>Materiaal</label>
+
+<select id="equipment">
+
+<option>Gym</option>
+<option>Thuis</option>
+<option>Halters</option>
+<option>Eigen lichaamsgewicht</option>
+
+</select>
+
+</div>
+
+</div>
 
 <button
 class="button dark full"
 style="margin-top:20px"
-onclick="saveProfile()">
-
+onclick="saveProfile()"
+>
 Profiel opslaan
-
 </button>
+
+<p class="smallNote" style="margin-top:14px">
+Je gegevens worden lokaal in deze browser opgeslagen.
+Er wordt niets naar een server gestuurd door deze demo.
+</p>
 
 </div>
 
@@ -1322,27 +1287,208 @@ Profiel opslaan
 </main>
 
 </div>
+</div>
+
+
+<!-- MODAL -->
+
+<div class="modal" id="modal">
+
+<div class="modalBox">
+
+<h2 id="modalTitle">Training</h2>
+
+<p class="muted" id="modalText"></p>
+
+<div class="modalActions">
+
+<button class="button outline" onclick="closeModal()">
+Sluiten
+</button>
+
+<button class="button dark" id="modalAction">
+Bevestigen
+</button>
+
+</div>
+
+</div>
 
 </div>
 
 
-<div
-class="toast"
-id="toast">
-</div>
+<div class="toast" id="toast"></div>
 
 
 <script>
 
-/* =========================
+/* =====================================================
+   DATA
+===================================================== */
+
+const exercises = [
+
+  {
+    name:"Bench press",
+    category:"Borst",
+    description:"Horizontaal duwen · kracht"
+  },
+
+  {
+    name:"Squat",
+    category:"Benen",
+    description:"Knie-dominant · kracht"
+  },
+
+  {
+    name:"Romanian deadlift",
+    category:"Hamstrings",
+    description:"Heup-dominant · posterior chain"
+  },
+
+  {
+    name:"Pull-up",
+    category:"Rug",
+    description:"Verticale pull · lichaamsgewicht"
+  },
+
+  {
+    name:"Barbell row",
+    category:"Rug",
+    description:"Horizontale pull · kracht"
+  },
+
+  {
+    name:"Shoulder press",
+    category:"Schouders",
+    description:"Verticale push · kracht"
+  },
+
+  {
+    name:"Lunges",
+    category:"Benen",
+    description:"Unilateraal · stabiliteit"
+  },
+
+  {
+    name:"Push-up",
+    category:"Borst",
+    description:"Push · lichaamsgewicht"
+  },
+
+  {
+    name:"Dumbbell row",
+    category:"Rug",
+    description:"Horizontale pull · dumbbell"
+  },
+
+  {
+    name:"Hip thrust",
+    category:"Bilspieren",
+    description:"Heup-extensie · kracht"
+  },
+
+  {
+    name:"Plank",
+    category:"Core",
+    description:"Anti-extensie · core"
+  },
+
+  {
+    name:"Calf raise",
+    category:"Kuiten",
+    description:"Kuit · isolatie"
+  }
+
+];
+
+
+/* =====================================================
+   STATE
+===================================================== */
+
+const defaultState = {
+
+  profile:{
+    name:"Alex",
+    level:"Intermediate",
+    goal:"Sterker worden",
+    days:["Ma","Wo","Vr"],
+    duration:45,
+    equipment:"Gym"
+  },
+
+  workouts:[],
+
+  currentWorkout:{
+    completed:[]
+  }
+
+};
+
+
+let state = loadState();
+
+
+function loadState(){
+
+  try{
+
+    const saved =
+      localStorage.getItem("adaptiveCoachState");
+
+    if(saved){
+
+      const parsed =
+        JSON.parse(saved);
+
+      return {
+        ...defaultState,
+        ...parsed,
+        profile:{
+          ...defaultState.profile,
+          ...(parsed.profile || {})
+        },
+        currentWorkout:{
+          completed:[],
+          ...(parsed.currentWorkout || {})
+        }
+      };
+
+    }
+
+  }catch(error){
+
+    console.log("Kon opgeslagen gegevens niet laden.");
+
+  }
+
+  return JSON.parse(
+    JSON.stringify(defaultState)
+  );
+
+}
+
+
+function saveState(){
+
+  localStorage.setItem(
+    "adaptiveCoachState",
+    JSON.stringify(state)
+  );
+
+}
+
+
+/* =====================================================
    NAVIGATION
-========================= */
+===================================================== */
 
 const screens =
-document.querySelectorAll(".screen");
+  document.querySelectorAll(".screen");
 
 const navButtons =
-document.querySelectorAll(".navButton");
+  document.querySelectorAll(".navButton");
 
 
 function openScreen(id){
@@ -1365,6 +1511,22 @@ function openScreen(id){
 
   });
 
+  if(id === "workout"){
+    renderWorkout();
+  }
+
+  if(id === "plan"){
+    renderWeek();
+  }
+
+  if(id === "progress"){
+    renderProgress();
+  }
+
+  if(id === "library"){
+    renderLibrary();
+  }
+
   window.scrollTo({
     top:0,
     behavior:"smooth"
@@ -1373,9 +1535,1536 @@ function openScreen(id){
 }
 
 
-/* =========================
-   NAV BUTTONS
-========================= */
+/* =====================================================
+   TOAST
+===================================================== */
+
+function toast(message){
+
+  const element =
+    document.getElementById("toast");
+
+  element.textContent =
+    message;
+
+  element.style.display =
+    "block";
+
+  clearTimeout(
+    window.toastTimer
+  );
+
+  window.toastTimer =
+    setTimeout(() => {
+
+      element.style.display =
+        "none";
+
+    },3000);
+
+}
+
+
+/* =====================================================
+   MODAL
+===================================================== */
+
+function showModal(title,text,action){
+
+  document.getElementById(
+    "modalTitle"
+  ).textContent = title;
+
+  document.getElementById(
+    "modalText"
+  ).textContent = text;
+
+  document.getElementById(
+    "modalAction"
+  ).onclick = action;
+
+  document.getElementById(
+    "modal"
+  ).classList.add("show");
+
+}
+
+
+function closeModal(){
+
+  document.getElementById(
+    "modal"
+  ).classList.remove("show");
+
+}
+
+
+/* =====================================================
+   WORKOUT GENERATOR
+===================================================== */
+
+function generateWorkout(){
+
+  const goal =
+    state.profile.goal;
+
+  const duration =
+    Number(state.profile.duration);
+
+  let workout = {
+    title:"Full body strength",
+    focus:"Kracht en techniek. Neem voldoende rust tussen zware sets.",
+    exercises:[]
+  };
+
+
+  if(goal === "Spiermassa"){
+
+    workout.title =
+      "Hypertrophy full body";
+
+    workout.focus =
+      "Focus op gecontroleerde herhalingen en voldoende trainingsvolume.";
+
+  }
+
+
+  if(goal === "10K"){
+
+    workout.title =
+      "10K running session";
+
+    workout.focus =
+      "Focus op looptechniek, conditie en een gecontroleerd tempo.";
+
+  }
+
+
+  if(goal === "HYROX"){
+
+    workout.title =
+      "HYROX conditioning";
+
+    workout.focus =
+      "Combineer kracht en conditie met een gelijkmatig tempo.";
+
+  }
+
+
+  if(goal === "Algemeen fit"){
+
+    workout.title =
+      "Full body fitness";
+
+    workout.focus =
+      "Een gebalanceerde training voor kracht, conditie en algemene fitheid.";
+
+  }
+
+
+  if(goal === "Sterker worden"){
+
+    workout.exercises = [
+
+      {
+        name:"Bench press",
+        sets:"4 × 6",
+        detail:"82.5 kg · RPE 7–8"
+      },
+
+      {
+        name:"Romanian deadlift",
+        sets:"3 × 8",
+        detail:"Gecontroleerd · RPE 7"
+      },
+
+      {
+        name:"Pull-up",
+        sets:"3 × 6–8",
+        detail:"Lichaamsgewicht"
+      },
+
+      {
+        name:"Shoulder press",
+        sets:"3 × 8",
+        detail:"RPE 7"
+      }
+
+    ];
+
+  }else if(goal === "Spiermassa"){
+
+    workout.exercises = [
+
+      {
+        name:"Bench press",
+        sets:"4 × 8",
+        detail:"RPE 7–8"
+      },
+
+      {
+        name:"Dumbbell row",
+        sets:"4 × 10",
+        detail:"Gecontroleerd"
+      },
+
+      {
+        name:"Squat",
+        sets:"3 × 8",
+        detail:"RPE 7"
+      },
+
+      {
+        name:"Shoulder press",
+        sets:"3 × 10",
+        detail:"RPE 8"
+      }
+
+    ];
+
+  }else if(goal === "10K"){
+
+    workout.exercises = [
+
+      {
+        name:"Easy run",
+        sets:"20 min",
+        detail:"Rustig tempo"
+      },
+
+      {
+        name:"Tempo intervals",
+        sets:"4 × 3 min",
+        detail:"RPE 7"
+      },
+
+      {
+        name:"Walking recovery",
+        sets:"3 × 2 min",
+        detail:"Rustig herstellen"
+      }
+
+    ];
+
+  }else if(goal === "HYROX"){
+
+    workout.exercises = [
+
+      {
+        name:"Run",
+        sets:"800 m",
+        detail:"RPE 7"
+      },
+
+      {
+        name:"Lunges",
+        sets:"3 × 12",
+        detail:"Per been"
+      },
+
+      {
+        name:"Push-up",
+        sets:"3 × 12",
+        detail:"Techniek eerst"
+      },
+
+      {
+        name:"Row",
+        sets:"500 m",
+        detail:"Steady pace"
+      }
+
+    ];
+
+  }else{
+
+    workout.exercises = [
+
+      {
+        name:"Squat",
+        sets:"3 × 8",
+        detail:"RPE 7"
+      },
+
+      {
+        name:"Push-up",
+        sets:"3 × 10",
+        detail:"Techniek"
+      },
+
+      {
+        name:"Dumbbell row",
+        sets:"3 × 10",
+        detail:"RPE 7"
+      },
+
+      {
+        name:"Plank",
+        sets:"3 × 40 sec",
+        detail:"Core"
+
+      }
+
+    ];
+
+  }
+
+
+  if(duration <= 30){
+
+    workout.exercises =
+      workout.exercises.slice(0,3);
+
+  }
+
+
+  return workout;
+
+}
+
+
+/* =====================================================
+   RENDER WORKOUT
+===================================================== */
+
+function renderWorkout(){
+
+  const workout =
+    generateWorkout();
+
+  document.getElementById(
+    "workoutTitle"
+  ).textContent =
+    workout.title;
+
+  document.getElementById(
+    "workoutFocus"
+  ).textContent =
+    workout.focus;
+
+  document.getElementById(
+    "workoutDuration"
+  ).textContent =
+    state.profile.duration;
+
+  const list =
+    document.getElementById(
+      "exerciseList"
+    );
+
+  list.innerHTML = "";
+
+  workout.exercises.forEach(
+    (exercise,index) => {
+
+      const div =
+        document.createElement("div");
+
+      div.className =
+        "exercise";
+
+      if(
+        state.currentWorkout.completed
+          .includes(index)
+      ){
+
+        div.classList.add(
+          "completed"
+        );
+
+      }
+
+      div.innerHTML = `
+
+        <div>
+          <b>${index + 1}. ${escapeHTML(exercise.name)}</b>
+          <small>
+            ${escapeHTML(exercise.sets)}
+            ·
+            ${escapeHTML(exercise.detail)}
+          </small>
+        </div>
+
+        <button class="check ${
+          state.currentWorkout.completed.includes(index)
+          ? "done"
+          : ""
+        }"
+        onclick="completeExercise(${index},this)">
+          ✓
+        </button>
+
+      `;
+
+      list.appendChild(div);
+
+    }
+  );
+
+}
+
+
+function completeExercise(index,button){
+
+  const completed =
+    state.currentWorkout.completed;
+
+  if(completed.includes(index)){
+
+    state.currentWorkout.completed =
+      completed.filter(
+        item => item !== index
+      );
+
+    button.classList.remove("done");
+
+    button
+      .closest(".exercise")
+      .classList.remove("completed");
+
+  }else{
+
+    completed.push(index);
+
+    button.classList.add("done");
+
+    button
+      .closest(".exercise")
+      .classList.add("completed");
+
+    toast("Oefening voltooid.");
+
+  }
+
+  saveState();
+
+}
+
+
+/* =====================================================
+   FINISH WORKOUT
+===================================================== */
+
+function finishWorkout(){
+
+  const workout =
+    generateWorkout();
+
+  const rpe =
+    Number(
+      document.getElementById(
+        "rpeValue"
+      ).textContent
+    );
+
+  const completed =
+    state.currentWorkout.completed.length;
+
+  if(completed < workout.exercises.length){
+
+    showModal(
+      "Training nog niet compleet",
+      "Je hebt " +
+      completed +
+      " van " +
+      workout.exercises.length +
+      " oefeningen afgerond. Wil je de training toch opslaan?",
+      () => {
+
+        closeModal();
+
+        saveWorkout(rpe);
+
+      }
+    );
+
+    return;
+
+  }
+
+  saveWorkout(rpe);
+
+}
+
+
+function saveWorkout(rpe){
+
+  const now =
+    new Date();
+
+  state.workouts.push({
+
+    id:Date.now(),
+
+    date:now.toISOString(),
+
+    title:generateWorkout().title,
+
+    duration:Number(
+      state.profile.duration
+    ),
+
+    rpe:rpe,
+
+    exercises:
+      state.currentWorkout.completed.length
+
+  });
+
+
+  state.currentWorkout = {
+    completed:[]
+  };
+
+
+  saveState();
+
+  toast(
+    "Training opgeslagen. Je volgende training wordt aangepast op basis van je RPE."
+  );
+
+  updateDashboard();
+
+  setTimeout(() => {
+
+    openScreen("dashboard");
+
+  },500);
+
+}
+
+
+/* =====================================================
+   WEEK
+===================================================== */
+
+function renderWeek(){
+
+  const container =
+    document.getElementById(
+      "weekContainer"
+    );
+
+  container.innerHTML = "";
+
+  const days = [
+    "Ma","Di","Wo","Do","Vr","Za","Zo"
+  ];
+
+  const workoutsThisWeek =
+    getThisWeekWorkouts();
+
+  days.forEach(day => {
+
+    const scheduled =
+      state.profile.days.includes(day);
+
+    const completed =
+      workoutsThisWeek.some(
+        workout => {
+
+          const date =
+            new Date(workout.date);
+
+          return (
+            dayFromDate(date) === day
+          );
+
+        }
+      );
+
+
+    const div =
+      document.createElement("div");
+
+    div.className =
+      "day";
+
+
+    if(scheduled){
+
+      let status =
+        completed
+          ? `<span class="badge">Voltooid</span>`
+          : `<span class="badge orange">Gepland</span>`;
+
+      if(
+        dayFromDate(new Date()) === day &&
+        !completed
+      ){
+
+        status =
+          `<span class="badge">Vandaag</span>`;
+
+      }
+
+      div.innerHTML = `
+
+        <div>
+          <strong>${day} · ${escapeHTML(
+            generateWorkout().title
+          )}</strong>
+
+          <small>
+            ${state.profile.duration} min ·
+            ${state.profile.goal}
+          </small>
+        </div>
+
+        ${status}
+
+      `;
+
+    }else{
+
+      div.innerHTML = `
+
+        <div>
+          <strong>${day} · Rust</strong>
+          <small>Herstel</small>
+        </div>
+
+        <span class="pill">Rust</span>
+
+      `;
+
+    }
+
+    container.appendChild(div);
+
+  });
+
+}
+
+
+/* =====================================================
+   DASHBOARD
+===================================================== */
+
+function updateDashboard(){
+
+  const workout =
+    generateWorkout();
+
+  document.getElementById(
+    "todayWorkoutName"
+  ).textContent =
+    workout.title;
+
+  document.getElementById(
+    "todayDuration"
+  ).textContent =
+    state.profile.duration + " min";
+
+  document.getElementById(
+    "todayDescription"
+  ).textContent =
+    workout.focus;
+
+  document.getElementById(
+    "goalText"
+  ).textContent =
+    state.profile.goal;
+
+  document.getElementById(
+    "todaySubtitle"
+  ).textContent =
+    dayFromDate(new Date()) +
+    " · " +
+    state.profile.duration +
+    " min · " +
+    state.profile.goal;
+
+
+  const workouts =
+    getThisWeekWorkouts();
+
+  document.getElementById(
+    "statWorkouts"
+  ).textContent =
+    workouts.length;
+
+
+  const minutes =
+    workouts.reduce(
+      (sum,item) =>
+        sum + Number(item.duration || 0),
+      0
+    );
+
+  document.getElementById(
+    "statTime"
+  ).textContent =
+    formatMinutes(minutes);
+
+
+  if(workouts.length){
+
+    const average =
+      workouts.reduce(
+        (sum,item) =>
+          sum + Number(item.rpe || 0),
+        0
+      ) / workouts.length;
+
+    document.getElementById(
+      "statRpe"
+    ).textContent =
+      average.toFixed(1);
+
+  }else{
+
+    document.getElementById(
+      "statRpe"
+    ).textContent =
+      "—";
+
+  }
+
+
+  document.getElementById(
+    "statStreak"
+  ).textContent =
+    calculateStreak();
+
+
+  const progress =
+    Math.min(
+      100,
+      40 +
+      state.workouts.length * 3
+    );
+
+  document.getElementById(
+    "goalProgress"
+  ).style.width =
+    progress + "%";
+
+  document.getElementById(
+    "goalProgressText"
+  ).textContent =
+    progress + "% richting je doel";
+
+
+  document.getElementById(
+    "dashboardCoachText"
+  ).textContent =
+    getDashboardCoachMessage();
+
+}
+
+
+function getDashboardCoachMessage(){
+
+  const workouts =
+    getThisWeekWorkouts();
+
+  if(!workouts.length){
+
+    return "Begin rustig. Zodra je trainingen opslaat, kan ik je voortgang gebruiken om je volgende sessies slimmer te maken.";
+
+  }
+
+  const last =
+    state.workouts[
+      state.workouts.length - 1
+    ];
+
+  if(last.rpe >= 9){
+
+    return "Je laatste training was zwaar. Ik zou de volgende sessie niet agressief verhogen.";
+
+  }
+
+  if(last.rpe <= 5){
+
+    return "Je laatste training voelde relatief makkelijk. Een kleine progressie kan passend zijn.";
+
+  }
+
+  return "Je ligt op schema. We verhogen de belasting alleen wanneer je prestaties dit toelaten.";
+
+}
+
+
+/* =====================================================
+   PROGRESS
+===================================================== */
+
+function renderProgress(){
+
+  const total =
+    state.workouts.length;
+
+  const minutes =
+    state.workouts.reduce(
+      (sum,item) =>
+        sum + Number(item.duration || 0),
+      0
+    );
+
+  document.getElementById(
+    "progressTotal"
+  ).textContent =
+    total;
+
+  document.getElementById(
+    "progressMinutes"
+  ).textContent =
+    minutes;
+
+  document.getElementById(
+    "progressStreak"
+  ).textContent =
+    calculateStreak();
+
+
+  if(total){
+
+    const avg =
+      state.workouts.reduce(
+        (sum,item) =>
+          sum + Number(item.rpe || 0),
+        0
+      ) / total;
+
+    document.getElementById(
+      "progressRpe"
+    ).textContent =
+      avg.toFixed(1);
+
+  }else{
+
+    document.getElementById(
+      "progressRpe"
+    ).textContent =
+      "—";
+
+  }
+
+
+  const list =
+    document.getElementById(
+      "historyList"
+    );
+
+  list.innerHTML = "";
+
+
+  if(!total){
+
+    list.innerHTML = `
+      <div class="empty">
+        Je hebt nog geen trainingen opgeslagen.
+        Je eerste training verschijnt hier.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  [...state.workouts]
+    .reverse()
+    .slice(0,20)
+    .forEach(workout => {
+
+      const item =
+        document.createElement("div");
+
+      item.className =
+        "historyItem";
+
+      item.innerHTML = `
+
+        <div>
+          <strong>
+            ${escapeHTML(workout.title)}
+          </strong>
+
+          <div class="historyDate">
+            ${formatDate(workout.date)}
+            · ${workout.duration} min
+            · RPE ${workout.rpe}
+          </div>
+        </div>
+
+        <span class="badge">
+          ${workout.exercises} oefeningen
+        </span>
+
+      `;
+
+      list.appendChild(item);
+
+    });
+
+}
+
+
+/* =====================================================
+   LIBRARY
+===================================================== */
+
+function renderLibrary(){
+
+  const grid =
+    document.getElementById(
+      "libraryGrid"
+    );
+
+  const search =
+    document.getElementById(
+      "exerciseSearch"
+    ).value
+      .toLowerCase()
+      .trim();
+
+  grid.innerHTML = "";
+
+
+  const filtered =
+    exercises.filter(item => {
+
+      return (
+        item.name
+          .toLowerCase()
+          .includes(search) ||
+
+        item.category
+          .toLowerCase()
+          .includes(search) ||
+
+        item.description
+          .toLowerCase()
+          .includes(search)
+      );
+
+    });
+
+
+  if(!filtered.length){
+
+    grid.innerHTML = `
+      <div class="empty">
+        Geen oefeningen gevonden.
+      </div>
+    `;
+
+    return;
+
+  }
+
+
+  filtered.forEach(item => {
+
+    const div =
+      document.createElement("div");
+
+    div.className =
+      "libraryItem";
+
+    div.innerHTML = `
+
+      <strong>
+        ${escapeHTML(item.name)}
+      </strong>
+
+      <small>
+        ${escapeHTML(item.category)}
+        ·
+        ${escapeHTML(item.description)}
+      </small>
+
+    `;
+
+    grid.appendChild(div);
+
+  });
+
+}
+
+
+/* =====================================================
+   CHAT
+===================================================== */
+
+function quickMessage(text){
+
+  document.getElementById(
+    "chatMessage"
+  ).value = text;
+
+  sendMessage();
+
+}
+
+
+function sendMessage(){
+
+  const input =
+    document.getElementById(
+      "chatMessage"
+    );
+
+  const text =
+    input.value.trim();
+
+  if(!text) return;
+
+
+  addMessage(
+    text,
+    "userMessage"
+  );
+
+
+  const response =
+    generateCoachResponse(text);
+
+
+  input.value = "";
+
+
+  setTimeout(() => {
+
+    addMessage(
+      response,
+      "coachMessage"
+    );
+
+  },350);
+
+}
+
+
+function generateCoachResponse(text){
+
+  const lower =
+    text.toLowerCase();
+
+
+  if(
+    lower.includes("20") ||
+    lower.includes("25") ||
+    lower.includes("30") ||
+    lower.includes("minuut") ||
+    lower.includes("tijd")
+  ){
+
+    return (
+      "Je hebt minder tijd. Ik zou eerst accessoires schrappen " +
+      "en de belangrijkste trainingsprikkel behouden. " +
+      "Ik verkort je sessie naar ongeveer " +
+      Math.min(30,state.profile.duration) +
+      " minuten."
+    );
+
+  }
+
+
+  if(
+    lower.includes("moe") ||
+    lower.includes("vermoeid") ||
+    lower.includes("slecht geslapen") ||
+    lower.includes("slaap")
+  ){
+
+    return (
+      "Dan zou ik vandaag niet proberen een record te forceren. " +
+      "Houd de belangrijkste oefeningen, verlaag eventueel " +
+      "het volume en train rond RPE 6–7."
+    );
+
+  }
+
+
+  if(
+    lower.includes("niet") &&
+    (
+      lower.includes("morgen") ||
+      lower.includes("donderdag") ||
+      lower.includes("vrijdag") ||
+      lower.includes("zaterdag")
+    )
+  ){
+
+    return (
+      "Geen probleem. Een gemiste training hoef je niet dubbel " +
+      "in te halen. Ik zou de resterende sessies spreiden zodat " +
+      "je herstel voldoende blijft."
+    );
+
+  }
+
+
+  if(
+    lower.includes("pijn") ||
+    lower.includes("knie") ||
+    lower.includes("schouder") ||
+    lower.includes("rug")
+  ){
+
+    return (
+      "Stop met een oefening die pijn veroorzaakt. Kies niet " +
+      automatisch een zwaardere variant. Bij aanhoudende of " +
+      "ernstige pijn is professionele beoordeling verstandig."
+    );
+
+  }
+
+
+  if(
+    lower.includes("makkelijk") ||
+    lower.includes("zwaarder") ||
+    lower.includes("goed getraind")
+  ){
+
+    return (
+      "Als je training duidelijk makkelijker voelde dan de " +
+      "beoogde RPE, kunnen we de volgende sessie een kleine " +
+      "progressie maken. Verhoog liever één variabele tegelijk."
+    );
+
+  }
+
+
+  if(
+    lower.includes("gemist") ||
+    lower.includes("overgeslagen")
+  ){
+
+    return (
+      "Laat de gemiste training achter je. Consistentie over " +
+      "weken is belangrijker dan één sessie inhalen. Ik zou " +
+      "je volgende training gewoon normaal hervatten."
+    );
+
+  }
+
+
+  if(
+    lower.includes("schema") ||
+    lower.includes("plan")
+  ){
+
+    return (
+      "Je huidige plan is gebaseerd op " +
+      state.profile.days.length +
+      " beschikbare dagen, je doel '" +
+      state.profile.goal +
+      "' en maximaal " +
+      state.profile.duration +
+      " minuten per sessie."
+    );
+
+  }
+
+
+  return (
+    "Ik zou je trainingsbelasting aanpassen zonder je " +
+    "hoofddoel uit het oog te verliezen. Vertel me bijvoorbeeld " +
+    "hoeveel tijd je hebt, hoe je herstel is of hoe zwaar je " +
+    "laatste training voelde."
+  );
+
+}
+
+
+function addMessage(
+  text,
+  className
+){
+
+  const chat =
+    document.getElementById(
+      "chat"
+    );
+
+
+  const message =
+    document.createElement(
+      "div"
+    );
+
+
+  message.className =
+    "message " +
+    className;
+
+
+  message.textContent =
+    text;
+
+
+  chat.appendChild(
+    message
+  );
+
+
+  chat.scrollTop =
+    chat.scrollHeight;
+
+}
+
+
+/* =====================================================
+   PROFILE
+===================================================== */
+
+function setupChoices(){
+
+  document
+    .querySelectorAll("#goalChoices .choice")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          document
+            .querySelectorAll(
+              "#goalChoices .choice"
+            )
+            .forEach(
+              b => b.classList.remove(
+                "selected"
+              )
+            );
+
+          button.classList.add(
+            "selected"
+          );
+
+        }
+      );
+
+    });
+
+
+  document
+    .querySelectorAll("#dayChoices .choice")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          button.classList.toggle(
+            "selected"
+          );
+
+        }
+      );
+
+    });
+
+}
+
+
+function loadProfileIntoForm(){
+
+  document.getElementById(
+    "name"
+  ).value =
+    state.profile.name;
+
+  document.getElementById(
+    "level"
+  ).value =
+    state.profile.level;
+
+  document.getElementById(
+    "duration"
+  ).value =
+    state.profile.duration;
+
+  document.getElementById(
+    "equipment"
+  ).value =
+    state.profile.equipment;
+
+
+  document
+    .querySelectorAll(
+      "#goalChoices .choice"
+    )
+    .forEach(button => {
+
+      button.classList.toggle(
+        "selected",
+        button.dataset.value ===
+        state.profile.goal
+      );
+
+    });
+
+
+  document
+    .querySelectorAll(
+      "#dayChoices .choice"
+    )
+    .forEach(button => {
+
+      button.classList.toggle(
+        "selected",
+        state.profile.days.includes(
+          button.dataset.value
+        )
+      );
+
+    });
+
+}
+
+
+function saveProfile(){
+
+  const name =
+    document.getElementById(
+      "name"
+    ).value.trim();
+
+
+  const goalButton =
+    document.querySelector(
+      "#goalChoices .choice.selected"
+    );
+
+
+  const days =
+    [...document.querySelectorAll(
+      "#dayChoices .choice.selected"
+    )]
+      .map(button =>
+        button.dataset.value
+      );
+
+
+  state.profile = {
+
+    name:
+      name || "Alex",
+
+    level:
+      document.getElementById(
+        "level"
+      ).value,
+
+    goal:
+      goalButton
+        ? goalButton.dataset.value
+        : "Sterker worden",
+
+    days:
+      days.length
+        ? days
+        : ["Ma","Wo","Vr"],
+
+    duration:
+      Number(
+        document.getElementById(
+          "duration"
+        ).value
+      ),
+
+    equipment:
+      document.getElementById(
+        "equipment"
+      ).value
+
+  };
+
+
+  saveState();
+
+  updateDashboard();
+
+  renderWorkout();
+
+  toast(
+    "Profiel opgeslagen. Je trainingsplan is bijgewerkt."
+  );
+
+}
+
+
+/* =====================================================
+   UTILITIES
+===================================================== */
+
+function getThisWeekWorkouts(){
+
+  const now =
+    new Date();
+
+  const start =
+    new Date(now);
+
+  const day =
+    start.getDay();
+
+  const diff =
+    day === 0
+      ? -6
+      : 1 - day;
+
+  start.setDate(
+    start.getDate() + diff
+  );
+
+  start.setHours(
+    0,0,0,0
+  );
+
+
+  return state.workouts.filter(
+    workout => {
+
+      const date =
+        new Date(
+          workout.date
+        );
+
+      return date >= start;
+
+    }
+  );
+
+}
+
+
+function dayFromDate(date){
+
+  const days = [
+    "Zo",
+    "Ma",
+    "Di",
+    "Wo",
+    "Do",
+    "Vr",
+    "Za"
+  ];
+
+  return days[
+    date.getDay()
+  ];
+
+}
+
+
+function calculateStreak(){
+
+  if(!state.workouts.length)
+    return 0;
+
+
+  const dates =
+    new Set(
+      state.workouts.map(
+        workout =>
+          new Date(workout.date)
+            .toISOString()
+            .slice(0,10)
+      )
+    );
+
+
+  let streak = 0;
+
+  const cursor =
+    new Date();
+
+  cursor.setHours(
+    0,0,0,0
+  );
+
+
+  while(
+    dates.has(
+      cursor
+        .toISOString()
+        .slice(0,10)
+    )
+  ){
+
+    streak++;
+
+    cursor.setDate(
+      cursor.getDate() - 1
+    );
+
+  }
+
+
+  return streak;
+
+}
+
+
+function formatMinutes(minutes){
+
+  const hours =
+    Math.floor(
+      minutes / 60
+    );
+
+  const mins =
+    minutes % 60;
+
+  if(hours){
+
+    return (
+      hours +
+      ":" +
+      String(mins).padStart(2,"0")
+    );
+
+  }
+
+  return (
+    "0:" +
+    String(mins).padStart(2,"0")
+  );
+
+}
+
+
+function formatDate(dateString){
+
+  const date =
+    new Date(
+      dateString
+    );
+
+  return date.toLocaleDateString(
+    "nl-NL",
+    {
+      day:"numeric",
+      month:"short",
+      year:"numeric"
+    }
+  );
+
+}
+
+
+function escapeHTML(value){
+
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
+
+
+/* =====================================================
+   INITIALIZATION
+===================================================== */
 
 navButtons.forEach(button => {
 
@@ -1389,313 +3078,19 @@ navButtons.forEach(button => {
 });
 
 
-/* =========================
-   TOAST
-========================= */
+setupChoices();
 
-function toast(message){
+loadProfileIntoForm();
 
-  const element =
-  document.getElementById("toast");
+updateDashboard();
 
-  element.textContent =
-  message;
+renderWorkout();
 
-  element.style.display =
-  "block";
+renderWeek();
 
-  clearTimeout(
-    window.toastTimer
-  );
+renderProgress();
 
-  window.toastTimer =
-  setTimeout(() => {
-
-    element.style.display =
-    "none";
-
-  },3000);
-
-}
-
-
-/* =========================
-   EXERCISES
-========================= */
-
-function completeExercise(button){
-
-  button.classList.toggle("done");
-
-  if(button.classList.contains("done")){
-
-    toast(
-      "Oefening voltooid."
-    );
-
-  }
-
-}
-
-
-/* =========================
-   FINISH WORKOUT
-========================= */
-
-function finishWorkout(){
-
-  const rpe =
-  document.getElementById(
-    "rpeValue"
-  ).textContent;
-
-  toast(
-    "Training opgeslagen. RPE " +
-    rpe +
-    "/10. Je volgende training wordt hierop aangepast."
-  );
-
-}
-
-
-/* =========================
-   RESCHEDULE
-========================= */
-
-function reschedule(){
-
-  toast(
-    "Training verschoven. De trainingsbelasting wordt opnieuw over je week verdeeld."
-  );
-
-}
-
-
-/* =========================
-   PROFILE CHOICES
-========================= */
-
-document
-.querySelectorAll(".choices")
-.forEach(group => {
-
-  group
-  .querySelectorAll(".choice")
-  .forEach(button => {
-
-    button.addEventListener(
-      "click",
-      () => {
-
-        /*
-          Voor doelen selecteren we één optie.
-          Voor dagen kunnen meerdere opties actief zijn.
-        */
-
-        const buttons =
-        [...group.querySelectorAll(".choice")];
-
-        if(buttons.length <= 5){
-
-          buttons.forEach(
-            b => b.classList.remove("selected")
-          );
-
-          button.classList.add("selected");
-
-        }else{
-
-          button.classList.toggle(
-            "selected"
-          );
-
-        }
-
-      }
-    );
-
-  });
-
-});
-
-
-/* =========================
-   PROFILE
-========================= */
-
-function saveProfile(){
-
-  const name =
-  document.getElementById(
-    "name"
-  ).value.trim();
-
-  toast(
-    "Profiel opgeslagen" +
-    (name ? " voor " + name : "") +
-    "."
-  );
-
-}
-
-
-/* =========================
-   COACH
-========================= */
-
-function sendMessage(){
-
-  const input =
-  document.getElementById(
-    "chatMessage"
-  );
-
-  const text =
-  input.value.trim();
-
-  if(!text) return;
-
-
-  const chat =
-  document.getElementById(
-    "chat"
-  );
-
-
-  addMessage(
-    text,
-    "userMessage"
-  );
-
-
-  const lower =
-  text.toLowerCase();
-
-  let response =
-  "Ik pas je planning aan zonder je einddoel uit het oog te verliezen.";
-
-
-  if(
-    lower.includes("20") ||
-    lower.includes("25") ||
-    lower.includes("30") ||
-    lower.includes("minuut")
-  ){
-
-    response =
-    "Je hebt minder tijd. Ik zou eerst accessoires schrappen en de belangrijkste trainingsprikkel behouden. Je training wordt ongeveer 25–30 minuten.";
-
-  }
-
-
-  else if(
-    lower.includes("moe") ||
-    lower.includes("vermoeid") ||
-    lower.includes("slecht geslapen") ||
-    lower.includes("slaap")
-  ){
-
-    response =
-    "Dan verlaag ik vandaag de belasting. We houden de belangrijkste bewegingen, maar verminderen volume of intensiteit.";
-
-  }
-
-
-  else if(
-    lower.includes("donderdag") ||
-    lower.includes("vrijdag") ||
-    lower.includes("morgen")
-  ){
-
-    response =
-    "Ik verplaats de training en verdeel de belasting opnieuw over de rest van je week. Je hoeft de gemiste training niet dubbel in te halen.";
-
-  }
-
-
-  else if(
-    lower.includes("knie") ||
-    lower.includes("schouder") ||
-    lower.includes("rug") ||
-    lower.includes("pijn")
-  ){
-
-    response =
-    "Stop met een oefening die pijn veroorzaakt. Een echte productieversie kan je beperkingen gebruiken om alternatieven te selecteren. Bij aanhoudende of ernstige pijn is professionele beoordeling verstandig.";
-
-  }
-
-
-  else if(
-    lower.includes("zwaarder") ||
-    lower.includes("makkelijk")
-  ){
-
-    response =
-    "Als je de huidige belasting duidelijk onder je doel-RPE uitvoert, kunnen we de volgende sessie geleidelijk verhogen. Ik zou niet meerdere variabelen tegelijk verhogen.";
-
-  }
-
-
-  setTimeout(() => {
-
-    addMessage(
-      response,
-      "coachMessage"
-    );
-
-  },350);
-
-
-  input.value = "";
-
-}
-
-
-/* =========================
-   ADD CHAT MESSAGE
-========================= */
-
-function addMessage(
-  text,
-  className
-){
-
-  const chat =
-  document.getElementById(
-    "chat"
-  );
-
-
-  const message =
-  document.createElement(
-    "div"
-  );
-
-
-  message.className =
-  "message " +
-  className;
-
-
-  /*
-    textContent voorkomt dat
-    gebruikers HTML kunnen injecteren.
-  */
-
-  message.textContent =
-  text;
-
-
-  chat.appendChild(
-    message
-  );
-
-
-  chat.scrollTop =
-  chat.scrollHeight;
-
-}
+renderLibrary();
 
 </script>
 
